@@ -4,8 +4,11 @@ QTO System — Command-line interface.
 Usage
 -----
 python src/main.py --input drawing.dxf --type G+1 --output boq.xlsx --plot-area 153
+python src/main.py --input drawing.dwg --type G+1 --output boq.xlsx --plot-area 153
 python src/main.py --sample --type G+1 --output boq.xlsx --plot-area 153
 python src/main.py --input plan.pdf --type G+1 --output boq.xlsx --api-key YOUR_KEY
+python src/main.py --input plan.pdf --type G+1 --output boq.xlsx --api-key YOUR_KEY \\
+                   --gemini-model gemini-2.5-pro --max-pages 5
 """
 
 from __future__ import annotations
@@ -45,7 +48,7 @@ def _load_sample() -> dict:
 # File input router
 # ---------------------------------------------------------------------------
 
-def _parse_file(input_path: str, api_key: str | None) -> dict:
+def _parse_file(input_path: str, api_key: str | None, gemini_model: str, max_pages: int) -> dict:
     ext = Path(input_path).suffix.lower()
     if ext in {".dxf", ".dwg"}:
         try:
@@ -53,6 +56,16 @@ def _parse_file(input_path: str, api_key: str | None) -> dict:
             return parse_dxf(input_path)
         except ImportError as exc:
             sys.exit(f"[ERROR] ezdxf not installed. Run: pip install ezdxf\n{exc}")
+        except Exception as exc:  # noqa: BLE001
+            if ext == ".dwg":
+                sys.exit(
+                    f"[ERROR] Could not open DWG file: {exc}\n"
+                    "Tip: AutoCAD DWG files are not natively supported. "
+                    "Export/Save-As to DXF format from AutoCAD or use the free "
+                    "ODA File Converter (https://www.opendesign.com — search 'ODA File Converter'), "
+                    "then re-run with the .dxf file."
+                )
+            sys.exit(f"[ERROR] Failed to parse DXF file: {exc}")
     elif ext == ".pdf":
         if not api_key:
             api_key = os.environ.get("GEMINI_API_KEY")
@@ -63,7 +76,7 @@ def _parse_file(input_path: str, api_key: str | None) -> dict:
             )
         try:
             from src.parsers.pdf_parser import parse_pdf
-            return parse_pdf(input_path, api_key)
+            return parse_pdf(input_path, api_key, model=gemini_model, max_pages=max_pages)
         except ImportError as exc:
             sys.exit(
                 f"[ERROR] Required PDF libraries not installed.\n"
@@ -73,7 +86,7 @@ def _parse_file(input_path: str, api_key: str | None) -> dict:
         with open(input_path, encoding="utf-8") as fh:
             return json.load(fh)
     else:
-        sys.exit(f"[ERROR] Unsupported file type: {ext}. Supported: .dxf, .pdf, .json")
+        sys.exit(f"[ERROR] Unsupported file type: {ext}. Supported: .dxf, .dwg, .pdf, .json")
 
 
 # ---------------------------------------------------------------------------
@@ -122,6 +135,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Google Gemini API key (required for PDF input).",
     )
     p.add_argument(
+        "--gemini-model",
+        metavar="MODEL",
+        default="gemini-2.0-flash",
+        help=(
+            "Gemini model for PDF extraction "
+            "(default: gemini-2.0-flash — cheapest with vision; "
+            "use gemini-2.5-pro for maximum accuracy)."
+        ),
+    )
+    p.add_argument(
+        "--max-pages",
+        type=int,
+        metavar="N",
+        default=3,
+        help=(
+            "Maximum PDF pages sent to Gemini (default: 3). "
+            "Set to 0 to process all pages."
+        ),
+    )
+    p.add_argument(
         "--project-name",
         metavar="NAME",
         default="Villa Project",
@@ -146,7 +179,7 @@ def main(argv: list[str] | None = None) -> int:
         data = _load_sample()
         print("[QTO] Using sample data from samples/sample_input.json")
     else:
-        data = _parse_file(args.input, args.api_key)
+        data = _parse_file(args.input, args.api_key, args.gemini_model, args.max_pages)
         print(f"[QTO] Parsed input file: {args.input}")
 
     # Allow CLI overrides of key project parameters
