@@ -1,0 +1,218 @@
+{
+  "sub_structure": [
+    {
+      "name": "Foundation",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "width × length × depth × count (volume); (length+0.2) × (width+0.2) × count × 0.10 (PCC); (area + perimeter × depth) × count (bitumen)"
+    },
+    {
+      "name": "Neck Columns",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "Perimeter × height × count (volume); where height = GFL + exc_depth - tb_depth - pcc_thickness"
+    },
+    {
+      "name": "Tie Beams",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "length × width × depth (volume); length × (width+0.2) × 0.10 (PCC); length × depth × 2 (bitumen)"
+    },
+    {
+      "name": "Solid Block Work",
+      "category": "Sub-Structure",
+      "unit": "m2",
+      "formula": "length × (GFL + exc_depth - tb_depth - pcc_thickness) (area); area × 2 (bitumen)"
+    },
+    {
+      "name": "Slab on Grade",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "GF_area × thickness (default 0.10m)"
+    },
+    {
+      "name": "Excavation",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "(2m + longest_length) × (2m + longest_width) = area; area × exc_level = volume"
+    },
+    {
+      "name": "Back Filling",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "(exc_area × (exc_level + gfsl_level)) - all_items_volume"
+    },
+    {
+      "name": "Anti-Termite",
+      "category": "Sub-Structure",
+      "unit": "m2",
+      "formula": "(total_pcc_area + slab_on_grade_area) × 1.15"
+    },
+    {
+      "name": "Polyethylene Sheet",
+      "category": "Sub-Structure",
+      "unit": "m2",
+      "formula": "total_pcc_area + slab_on_grade_area"
+    },
+    {
+      "name": "Road Base",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "exc_area × thickness (default 0.25m)"
+    }
+  ],
+  "super_structure": [
+    {
+      "name": "Slabs",
+      "category": "Super-Structure",
+      "unit": "m3",
+      "formula": "area × thickness"
+    },
+    {
+      "name": "Beams",
+      "category": "Super-Structure",
+      "unit": "m3",
+      "formula": "length × width × (depth - slab_thickness)"
+    },
+    {
+      "name": "Columns",
+      "category": "Super-Structure",
+      "unit": "m3",
+      "formula": "length × width × floor_height × qty"
+    },
+    {
+      "name": "Dry Area Flooring",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "formula": "total_floor_area - wet_area"
+    },
+    {
+      "name": "Skirting",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "formula": "dry_area_perimeter - (40% of sum of door widths)"
+    },
+    {
+      "name": "Paint",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "formula": "skirting_area × floor_height"
+    },
+    {
+      "name": "Dry Areas Ceiling",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "formula": "= dry_areas_flooring"
+    }
+  ],
+  "finishes": [
+    {
+      "name": "Wet Areas Flooring",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "toilets + bathrooms + kitchens + pantries + laundry areas"
+    },
+    {
+      "name": "Wall Tiles",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "perimeter_of_wet_areas × (floor_height - 0.50)"
+    },
+    {
+      "name": "Wet Areas Ceiling",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "= wet_areas_flooring"
+    },
+    {
+      "name": "Balcony Flooring",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "balcony_area (if exists)"
+    },
+    {
+      "name": "Marble Threshold",
+      "category": "Finishes",
+      "unit": "RM",
+      "formula": "sum of widths of all doors"
+    },
+    {
+      "name": "Block 20 External",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "(external_villa_length × floor_height) - (windows_areas + main_door_area)"
+    },
+    {
+      "name": "Block 20 Internal",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "(20cm internal walls × floor_height) - 40% door areas"
+    },
+    {
+      "name": "Block 10 Internal",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "(10cm internal walls × floor_height) - 40% door areas"
+    },
+    {
+      "name": "Internal Plaster",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "((internal_walls_area × 2) + external_walls_area) - (doors_area × 2 + windows_area)"
+    },
+    {
+      "name": "External Villa Walls Finish",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "external_perimeter × (2_floors_height + 1.5m)"
+    },
+    {
+      "name": "Waterproofing",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "all 1st floor wet areas + balconies flooring area"
+    },
+    {
+      "name": "Combo Roof System",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "roof_slab_area × 1.2"
+    },
+    {
+      "name": "Openings - Doors",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "length × width × count per door type"
+    },
+    {
+      "name": "Openings - Windows",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "length × width × count per window type"
+    },
+    {
+      "name": "Thermal Block External",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "per average data / project-specific schedule"
+    },
+    {
+      "name": "Interlock Paving",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "per average data / project-specific schedule"
+    },
+    {
+      "name": "False Ceiling",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "per average data / project-specific schedule"
+    },
+    {
+      "name": "Roof Waterproofing",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "per average data / project-specific schedule"
+    }
+  ]
+}

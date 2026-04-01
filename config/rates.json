@@ -1,0 +1,49 @@
+{
+  "sub_structure": {
+    "foundation_concrete": 180,
+    "foundation_pcc": 120,
+    "foundation_bitumen": 25,
+    "neck_column_concrete": 180,
+    "neck_column_formwork": 35,
+    "tie_beam_concrete": 180,
+    "tie_beam_pcc": 120,
+    "tie_beam_bitumen": 25,
+    "solid_block_work": 85,
+    "solid_block_bitumen": 25,
+    "slab_on_grade_concrete": 160,
+    "excavation": 18,
+    "back_filling": 15,
+    "anti_termite": 12,
+    "polyethylene_sheet": 4,
+    "road_base": 45
+  },
+  "super_structure": {
+    "slab_concrete": 180,
+    "beam_concrete": 180,
+    "column_concrete": 200,
+    "dry_area_flooring": 95,
+    "skirting": 55,
+    "paint": 18,
+    "dry_areas_ceiling": 75
+  },
+  "finishes": {
+    "wet_areas_flooring": 110,
+    "wall_tiles": 95,
+    "wet_areas_ceiling": 80,
+    "balcony_flooring": 95,
+    "marble_threshold": 65,
+    "block_20_external": 90,
+    "block_20_internal": 85,
+    "block_10_internal": 80,
+    "internal_plaster": 28,
+    "external_villa_walls_finish": 45,
+    "waterproofing": 55,
+    "combo_roof_system": 120,
+    "doors": 1500,
+    "windows": 850,
+    "thermal_block_external": 95,
+    "interlock_paving": 65,
+    "false_ceiling": 75,
+    "roof_waterproofing": 55
+  }
+}
