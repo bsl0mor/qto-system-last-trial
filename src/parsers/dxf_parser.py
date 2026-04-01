@@ -17,6 +17,13 @@ except ImportError:
 
 
 # ---------------------------------------------------------------------------
+# Default dimension constants for opening extraction
+# ---------------------------------------------------------------------------
+
+DEFAULT_DOOR_HEIGHT: float = 2.10   # metres
+DEFAULT_WINDOW_HEIGHT: float = 1.50  # metres
+
+# ---------------------------------------------------------------------------
 # Helper geometry utilities
 # ---------------------------------------------------------------------------
 
@@ -217,7 +224,7 @@ class DXFParser:
                 "layer": entity.dxf.layer,
                 "type": opening_type,
                 "width": max(bbox["width"], bbox["height"]),
-                "height": 2.10 if opening_type == "door" else 1.50,
+                "height": DEFAULT_DOOR_HEIGHT if opening_type == "door" else DEFAULT_WINDOW_HEIGHT,
                 "count": 1,
             })
         return openings

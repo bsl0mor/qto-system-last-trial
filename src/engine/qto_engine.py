@@ -6,6 +6,7 @@ and returns a complete BOQ with 50+ items.
 from __future__ import annotations
 
 import json
+import math
 import os
 from typing import Any
 
@@ -217,7 +218,6 @@ class QTOEngine:
         # --- Excavation ---
         # Determine longest dimensions from footprint or data
         if longest_length == 0.0 or longest_width == 0.0:
-            import math
             side = math.sqrt(plot_area)
             longest_length = longest_length or side * 1.2
             longest_width = longest_width or side * 0.9
