@@ -1,0 +1,34 @@
+{
+  "G+1": {
+    "project_count": 101,
+    "avg_plot_area": 153,
+    "avg_cost_aed": 641278,
+    "items": {
+      "thermal_block_external": {"avg": 466.0, "unit": "m2"},
+      "internal_plaster": {"avg": 1144.3, "unit": "m2"},
+      "external_plaster": {"avg": 718.8, "unit": "m2"},
+      "dry_area_flooring": {"avg": 248.7, "unit": "m2"},
+      "wet_area_flooring": {"avg": 317.1, "unit": "m2"},
+      "wall_tiles": {"avg": 305.0, "unit": "m2"},
+      "roof_waterproofing": {"avg": 121.8, "unit": "m2"},
+      "false_ceiling": {"avg": 259.0, "unit": "m2"},
+      "interlock_paving": {"avg": 358.4, "unit": "m2"}
+    },
+    "ratios": {
+      "external_plaster_to_thermal_block": 1.54
+    }
+  },
+  "G+2": {
+    "project_count": 46,
+    "avg_plot_area": 3108,
+    "avg_cost_aed": 927255,
+    "items": {
+      "thermal_block_external": {"avg": 689.1, "unit": "m2"},
+      "internal_plaster": {"avg": 1822.9, "unit": "m2"},
+      "dry_area_flooring": {"avg": 287.9, "unit": "m2"},
+      "wet_area_flooring": {"avg": 104.0, "unit": "m2"},
+      "false_ceiling": {"avg": 301.4, "unit": "m2"},
+      "interlock_paving": {"avg": 420.9, "unit": "m2"}
+    }
+  }
+}
