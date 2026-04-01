@@ -8,7 +8,7 @@ class QTOValidator:
             "items": {
                 "thermal_block_external": 466.0,
                 "internal_plaster": 1144.3,
-                "external_plaster": 718.8,
+                "external_finish": 718.8,
                 "dry_area_flooring": 248.7,
                 "wet_area_flooring": 317.1,
                 "wall_tiles": 305.0,

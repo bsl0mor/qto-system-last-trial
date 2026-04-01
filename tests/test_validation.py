@@ -72,7 +72,7 @@ def test_is_draft_when_low_confidence(validator):
     qty = avg * 5.0
     quantities = {'thermal_block_external': {'area': qty}}
     result = validator.validate(quantities, 'G+1', 153)
-    assert result['is_draft'] == True
+    assert result['is_draft']
 
 
 def test_extract_qty_area(validator):
