@@ -1,0 +1,9 @@
+{
+  "confidence_threshold": 95,
+  "deviation_threshold": 0.15,
+  "draft_threshold": 95,
+  "color_green": 95,
+  "color_yellow_min": 90,
+  "color_yellow_max": 95,
+  "color_red": 90
+}

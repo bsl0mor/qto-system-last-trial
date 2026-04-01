@@ -1,0 +1,68 @@
+{
+  "sub_structure": {
+    "foundation": {
+      "area": "width * length * count",
+      "volume": "width * length * depth * count",
+      "pcc": "(length + 0.2) * (width + 0.2) * 0.1 * count",
+      "bitumen": "(area + perimeter * depth) * count"
+    },
+    "neck_columns": {
+      "area": "width * length * (gfl + excavation_depth - tb_depth - pcc_thickness)",
+      "volume": "perimeter * height * count"
+    },
+    "tie_beams": {
+      "volume": "length * width * depth",
+      "pcc": "length * (width + 0.2) * 0.1",
+      "bitumen": "length * depth * 2"
+    },
+    "solid_block_work": {
+      "area": "length * ((gfl + excavation_depth) - tb_depth - pcc_thickness)",
+      "bitumen": "area * 2"
+    },
+    "slab_on_grade": {
+      "area": "gf_area",
+      "volume": "area * 0.1"
+    },
+    "excavation": {
+      "area": "(2 + longest_length) * (2 + longest_width)",
+      "volume": "area * excavation_level"
+    },
+    "back_filling": {
+      "area": "excavation_area",
+      "volume": "(area * (excavation_level + gfsl_level)) - all_items_volume"
+    },
+    "anti_termite": {
+      "area": "(total_pcc_area + slab_on_grade_area) * 1.15"
+    },
+    "polyethylene_sheet": {
+      "area": "total_pcc_area + slab_on_grade_area"
+    },
+    "road_base": {
+      "area": "excavation_area",
+      "volume": "area * 0.25"
+    }
+  },
+  "super_structure": {
+    "slabs": {"volume": "area * thickness"},
+    "beams": {"volume": "length * width * (depth - slab_thickness)"},
+    "columns": {"volume": "length * width * floor_height * qty"},
+    "dry_area_flooring": {"area": "all_floor_area - wet_areas_flooring"},
+    "skirting": {"area": "perimeter_dry_areas - (0.4 * sum_door_widths)"},
+    "paint": {"area": "skirting_area * floor_height"},
+    "dry_areas_ceiling": {"area": "dry_areas_flooring"}
+  },
+  "finishes": {
+    "wet_area_flooring": {"area": "sum(toilets + bathrooms + kitchens + pantries + laundry)"},
+    "wall_tiles": {"area": "perimeter_wet_areas * (floor_height - 0.5)"},
+    "wet_areas_ceiling": {"area": "wet_area_flooring"},
+    "balcony_flooring": {"area": "balcony_area"},
+    "marble_threshold": {"rm": "sum(door_widths)"},
+    "block_20_external": {"area": "(external_perimeter * floor_height) - (windows_area + main_door_area)"},
+    "block_20_internal": {"area": "(internal_20cm_length * floor_height) - (0.4 * door_areas)"},
+    "block_10_internal": {"area": "(internal_10cm_length * floor_height) - (0.4 * door_areas)"},
+    "internal_plaster": {"area": "((internal_walls_area * 2) + external_walls_area) - (doors_area * 2 + windows_area)"},
+    "external_finish": {"area": "external_perimeter * (2_floors_height + 1.5)"},
+    "waterproofing": {"area": "first_floor_wet_areas + balconies"},
+    "combo_roof_system": {"area": "roof_slab_area * 1.2"}
+  }
+}
