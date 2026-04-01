@@ -58,6 +58,15 @@ class QTOEngine:
         ps = self.sub_calc.calculate_polyethylene_sheet(total_pcc_area, sog['area'])
         results['polyethylene_sheet'] = ps
 
+        # Sub-structure sub-items (PCC, Bitumen, Formwork)
+        results['foundation_area'] = {'area': found['total_area']}
+        results['foundation_pcc'] = {'area': found['total_pcc_area']}
+        results['foundation_bitumen'] = {'area': found['total_bitumen_area']}
+        results['tie_beam_pcc'] = {'area': tb['total_pcc_area']}
+        results['tie_beam_bitumen'] = {'area': tb['total_bitumen']}
+        results['solid_block_bitumen'] = {'area': sbw['total_bitumen']}
+        results['neck_column_formwork'] = {'area': nc['total_volume']}
+
         if data.get('road_base', False):
             rb = self.sub_calc.calculate_road_base(exc)
             results['road_base'] = rb
