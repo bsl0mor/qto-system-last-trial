@@ -116,7 +116,7 @@ class SubStructureCalculator:
     ) -> dict:
         """
         Height = GFL + exc_depth - tb_depth - pcc_thickness
-        Volume = Perimeter × Height × count  (perimeter of rectangular section)
+        Volume = width × length × height × count  (concrete cross-section × height)
         Area   = width × length × count  (plan area, for quantity schedule)
         """
         height = gfl + exc_depth - tb_depth - pcc_thickness
@@ -128,8 +128,7 @@ class SubStructureCalculator:
             l = c["length"] if isinstance(c, dict) else c.length
             n = c.get("count", 1) if isinstance(c, dict) else c.count
 
-            perimeter = 2 * (w + l)
-            total_volume += perimeter * height * n
+            total_volume += w * l * height * n
             total_area += w * l * n
 
         return {

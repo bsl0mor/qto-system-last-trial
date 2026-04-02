@@ -53,8 +53,8 @@
         "tb_depth",
         "pcc_thickness"
       ],
-      "formula_python": "height = GFL + exc_depth - tb_depth - pcc_thickness\nperimeter = 2 * (width + length)\nvolume = perimeter * height * count",
-      "description": "Perimeter × Height × count;  Height = GFL + exc_depth − tb_depth − pcc_thickness"
+      "formula_python": "height = GFL + exc_depth - tb_depth - pcc_thickness\nvolume = width * length * height * count",
+      "description": "width × length × height × count;  Height = GFL + exc_depth − tb_depth − pcc_thickness"
     },
     {
       "name": "Tie Beams — Concrete",
