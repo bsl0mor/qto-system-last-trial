@@ -185,13 +185,21 @@ class TestExternalVillaWallsFinish:
 # ---------------------------------------------------------------------------
 
 class TestWaterproofing:
-    def test_wet_plus_balcony(self, calc):
-        res = calc.calculate_waterproofing(first_floor_wet_area=20.0, balcony_area=10.0)
-        assert res["area_m2"] == pytest.approx(30.0, rel=1e-6)
+    def test_wet_only(self, calc):
+        res = calc.calculate_waterproofing(first_floor_wet_area=20.0)
+        assert res["area_m2"] == pytest.approx(20.0, rel=1e-6)
 
     def test_no_balcony(self, calc):
         res = calc.calculate_waterproofing(15.0)
         assert res["area_m2"] == pytest.approx(15.0, rel=1e-6)
+
+    def test_balcony_waterproofing_separate(self, calc):
+        res = calc.calculate_balcony_waterproofing(balcony_area=10.0)
+        assert res["area_m2"] == pytest.approx(10.0, rel=1e-6)
+
+    def test_balcony_waterproofing_default_zero(self, calc):
+        res = calc.calculate_balcony_waterproofing()
+        assert res["area_m2"] == pytest.approx(0.0, abs=1e-9)
 
 
 # ---------------------------------------------------------------------------

@@ -214,13 +214,22 @@ class FinishesCalculator:
     # 11. Waterproofing
     # ------------------------------------------------------------------
     def calculate_waterproofing(
-        self, first_floor_wet_area: float, balcony_area: float = 0.0
+        self, first_floor_wet_area: float
     ) -> dict:
         """
-        Waterproofing = all 1st floor wet areas + balconies flooring area
+        Waterproofing = all 1st floor wet areas (toilets, bathrooms, kitchen, laundry)
+        Balcony waterproofing is handled separately via calculate_balcony_waterproofing.
         """
-        total = first_floor_wet_area + balcony_area
-        return {"area_m2": round(total, 3)}
+        return {"area_m2": round(first_floor_wet_area, 3)}
+
+    # ------------------------------------------------------------------
+    # 11b. Balcony Waterproofing
+    # ------------------------------------------------------------------
+    def calculate_balcony_waterproofing(self, balcony_area: float = 0.0) -> dict:
+        """
+        Balcony Waterproofing = balcony_area (liquid membrane on balcony deck)
+        """
+        return {"area_m2": round(balcony_area, 3)}
 
     # ------------------------------------------------------------------
     # 12. Combo Roof System

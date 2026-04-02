@@ -294,6 +294,29 @@
       ],
       "formula_python": "area = dry_area_flooring",
       "description": "= dry_area_flooring  (1:1)"
+    },
+    {
+      "name": "Parapet — Block Work",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "inputs": [
+        "parapet_perimeter",
+        "parapet_height=1.0"
+      ],
+      "formula_python": "area = parapet_perimeter * parapet_height",
+      "description": "parapet_perimeter × parapet_height  (block wall around roof perimeter)"
+    },
+    {
+      "name": "Parapet — Concrete Capping",
+      "category": "Super-Structure",
+      "unit": "m3",
+      "inputs": [
+        "parapet_perimeter",
+        "parapet_thickness=0.20",
+        "parapet_capping_height=0.20"
+      ],
+      "formula_python": "volume = parapet_perimeter * parapet_thickness * parapet_capping_height",
+      "description": "parapet_perimeter × parapet_thickness × capping_height  (RC ring beam / capping on parapet)"
     }
   ],
   "finishes": [

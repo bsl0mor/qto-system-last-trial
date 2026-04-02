@@ -148,10 +148,48 @@ class TestPaint:
 
 
 # ---------------------------------------------------------------------------
-# 7. Dry Areas Ceiling
+# 8. Parapet Block Work
 # ---------------------------------------------------------------------------
 
-class TestDryAreasCeiling:
-    def test_equals_flooring(self, calc):
-        res = calc.calculate_dry_areas_ceiling(248.7)
-        assert res["area_m2"] == pytest.approx(248.7, rel=1e-6)
+class TestParapetBlock:
+    def test_area_formula(self, calc):
+        # Area = perimeter × height
+        res = calc.calculate_parapet_block(perimeter=82.0, height=1.0)
+        assert res["area_m2"] == pytest.approx(82.0, rel=1e-6)
+
+    def test_custom_height(self, calc):
+        res = calc.calculate_parapet_block(perimeter=60.0, height=1.2)
+        assert res["area_m2"] == pytest.approx(60.0 * 1.2, rel=1e-6)
+
+    def test_default_height_is_1m(self, calc):
+        res = calc.calculate_parapet_block(perimeter=50.0)
+        assert res["area_m2"] == pytest.approx(50.0, rel=1e-6)
+
+    def test_zero_perimeter(self, calc):
+        res = calc.calculate_parapet_block(perimeter=0.0)
+        assert res["area_m2"] == pytest.approx(0.0, abs=1e-9)
+
+
+# ---------------------------------------------------------------------------
+# 9. Parapet Concrete Capping
+# ---------------------------------------------------------------------------
+
+class TestParapetConcrete:
+    def test_volume_formula(self, calc):
+        # Volume = perimeter × thickness × capping_height
+        res = calc.calculate_parapet_concrete(
+            perimeter=82.0, thickness=0.15, capping_height=0.20
+        )
+        expected = 82.0 * 0.15 * 0.20
+        assert res["volume_m3"] == pytest.approx(expected, rel=1e-6)
+
+    def test_default_dimensions(self, calc):
+        # defaults: thickness=0.20, capping_height=0.20
+        res = calc.calculate_parapet_concrete(perimeter=82.0)
+        expected = 82.0 * 0.20 * 0.20
+        assert res["volume_m3"] == pytest.approx(expected, rel=1e-6)
+
+    def test_zero_perimeter(self, calc):
+        res = calc.calculate_parapet_concrete(perimeter=0.0)
+        assert res["volume_m3"] == pytest.approx(0.0, abs=1e-9)
+

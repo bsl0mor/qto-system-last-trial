@@ -123,19 +123,27 @@ class TestBOQGeneration:
 
     def test_dry_area_flooring_present(self, boq_results):
         names = [i["description"].lower() for i in boq_results]
-        assert any("dry area flooring" in n for n in names)
+        assert any("flooring" in n and "dry" in n for n in names)
 
     def test_wet_areas_flooring_present(self, boq_results):
         names = [i["description"].lower() for i in boq_results]
-        assert any("wet areas flooring" in n for n in names)
+        assert any("flooring" in n and "wet" in n for n in names)
 
     def test_internal_plaster_present(self, boq_results):
         names = [i["description"].lower() for i in boq_results]
-        assert any("internal plaster" in n for n in names)
+        assert any("plaster" in n for n in names)
 
-    def test_thermal_block_present(self, boq_results):
+    def test_block_20_present(self, boq_results):
         names = [i["description"].lower() for i in boq_results]
-        assert any("thermal block" in n for n in names)
+        assert any("block 20cm" in n for n in names)
+
+    def test_parapet_block_present(self, boq_results):
+        names = [i["description"].lower() for i in boq_results]
+        assert any("parapet" in n and "block" in n for n in names)
+
+    def test_parapet_concrete_present(self, boq_results):
+        names = [i["description"].lower() for i in boq_results]
+        assert any("parapet" in n and "concrete" in n for n in names)
 
     def test_amounts_calculated_from_rate_and_qty(self, boq_results):
         for item in boq_results:

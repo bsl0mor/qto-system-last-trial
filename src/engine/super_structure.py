@@ -243,7 +243,36 @@ class SuperStructureCalculator:
         return {"area_m2": round(total, 3)}
 
     # ------------------------------------------------------------------
-    # 14. Staircase
+    # 14. Parapet Block Work
+    # ------------------------------------------------------------------
+    def calculate_parapet_block(
+        self, perimeter: float, height: float = 1.00
+    ) -> dict:
+        """
+        Parapet block wall area.
+        Area = perimeter × height
+        """
+        area = perimeter * height
+        return {"area_m2": round(area, 3)}
+
+    # ------------------------------------------------------------------
+    # 15. Parapet Concrete Capping
+    # ------------------------------------------------------------------
+    def calculate_parapet_concrete(
+        self,
+        perimeter: float,
+        thickness: float = 0.20,
+        capping_height: float = 0.20,
+    ) -> dict:
+        """
+        Parapet RC capping / ring beam on top of parapet wall.
+        Volume = perimeter × thickness × capping_height
+        """
+        volume = perimeter * thickness * capping_height
+        return {"volume_m3": round(volume, 3)}
+
+    # ------------------------------------------------------------------
+    # 16. Staircase
     # ------------------------------------------------------------------
     def calculate_staircase(
         self,
