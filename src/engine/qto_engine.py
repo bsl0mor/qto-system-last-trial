@@ -145,6 +145,7 @@ class QTOEngine:
         longest_length = data.get("longest_length", 0.0)
         longest_width = data.get("longest_width", 0.0)
         has_road_base = data.get("has_road_base", False)
+        road_base_thickness = data.get("road_base_thickness", 0.25)
 
         # --- Foundation ---
         if footings:
@@ -256,7 +257,7 @@ class QTOEngine:
 
         # --- Road Base (optional) ---
         if has_road_base:
-            rb_res = self.sub_calc.calculate_road_base(exc_area)
+            rb_res = self.sub_calc.calculate_road_base(exc_area, road_base_thickness)
             items.append(_item("A.17", "Road Base (25 cm compacted)", "m3",
                                rb_res["volume_m3"], "Sub-Structure",
                                "road_base", r))

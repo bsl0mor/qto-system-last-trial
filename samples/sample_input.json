@@ -20,6 +20,7 @@
   "roof_area": 100.0,
   "total_floor_area": 200.0,
   "has_road_base": false,
+  "road_base_thickness": 0.25,
   "main_door_area": 4.0,
   "stair_width": 1.20,
   "stair_count": 1,

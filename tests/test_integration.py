@@ -50,7 +50,8 @@ class TestSampleData:
         assert os.path.exists(SAMPLE_PATH), f"Missing: {SAMPLE_PATH}"
 
     def test_required_keys_present(self, sample_data):
-        for key in ["project_type", "plot_area", "footings", "rooms", "openings"]:
+        for key in ["project_type", "plot_area", "footings", "rooms", "openings",
+                    "exc_depth", "has_road_base", "road_base_thickness"]:
             assert key in sample_data, f"Key '{key}' missing from sample_input.json"
 
     def test_project_type_is_g_plus_1(self, sample_data):
@@ -99,6 +100,26 @@ class TestBOQGeneration:
     def test_excavation_in_sub_structure(self, boq_results):
         names = [i["description"].lower() for i in boq_results]
         assert any("excavation" in n for n in names)
+
+    def test_road_base_thickness_from_user_input(self):
+        """Road base thickness must come from user input, not be hardcoded."""
+        from src.engine.qto_engine import QTOEngine
+        import json, os
+        with open(os.path.join(os.path.dirname(__file__), "..", "samples", "sample_input.json")) as f:
+            data = json.load(f)
+        # Override: enable road base with a non-default thickness (0.30 m)
+        data["has_road_base"] = True
+        data["road_base_thickness"] = 0.30
+        engine = QTOEngine()
+        results = engine.run(data)
+        rb_items = [i for i in results if "road base" in i["description"].lower()]
+        assert rb_items, "Road Base item missing from BOQ when has_road_base=True"
+        exc_area = (2 + data["longest_length"]) * (2 + data["longest_width"])
+        expected_vol = round(exc_area * 0.30, 3)
+        assert abs(rb_items[0]["quantity"] - expected_vol) < 0.01, (
+            f"Road base volume {rb_items[0]['quantity']} != expected {expected_vol} "
+            f"(user thickness 0.30 m not applied)"
+        )
 
     def test_dry_area_flooring_present(self, boq_results):
         names = [i["description"].lower() for i in boq_results]
