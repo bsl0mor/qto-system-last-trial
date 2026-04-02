@@ -25,14 +25,14 @@ def validator():
 
 class TestValidateItem:
     def test_item_within_tolerance_is_green(self, validator):
-        # G+1 avg thermal_block_external = 466.0 m² @ avg plot 153 m²
-        # Same plot → same expected → deviation 0% → confidence 100%
+        # G+1 avg thermal_block_external = 359.7 m² @ avg_plot 587 m²
+        # Exact match at avg plot → 0% deviation, n=42 → n_cap=100% → confidence=100%
         result = validator.validate_item(
             item_name="Thermal Block (External Walls)",
-            calculated_qty=466.0,
+            calculated_qty=359.7,
             unit="m2",
             project_type="G+1",
-            plot_area=153.0,
+            plot_area=587.0,
         )
         assert result.flag == "GREEN"
         assert result.confidence == pytest.approx(100.0, abs=0.1)
@@ -42,19 +42,20 @@ class TestValidateItem:
         # Massive deviation should produce RED
         result = validator.validate_item(
             item_name="Thermal Block (External Walls)",
-            calculated_qty=1400.0,   # ~3× the 153 m² plot average
+            calculated_qty=1400.0,   # ~4× the avg at 587 m² plot
             unit="m2",
             project_type="G+1",
-            plot_area=153.0,
+            plot_area=587.0,
         )
         assert result.flag == "RED"
         assert result.requires_manual_review
 
     def test_item_without_reference_data_gets_neutral_confidence(self, validator):
+        # "Doors (Supply & Install)" has no key in averages.json
         result = validator.validate_item(
-            item_name="Excavation Volume",   # no reference in averages.json
-            calculated_qty=200.0,
-            unit="m3",
+            item_name="Doors (Supply & Install)",
+            calculated_qty=20.0,
+            unit="m2",
             project_type="G+1",
             plot_area=153.0,
         )
@@ -63,21 +64,23 @@ class TestValidateItem:
         assert result.scaled_average is None
 
     def test_confidence_decreases_with_deviation(self, validator):
+        # Close: exact average at avg plot → high confidence
         res_close = validator.validate_item(
-            "Thermal Block (External Walls)", 466.0, "m2", "G+1", 153.0
+            "Thermal Block (External Walls)", 359.7, "m2", "G+1", 587.0
         )
+        # Far: 4× average → low confidence
         res_far = validator.validate_item(
-            "Thermal Block (External Walls)", 600.0, "m2", "G+1", 153.0
+            "Thermal Block (External Walls)", 1440.0, "m2", "G+1", 587.0
         )
         assert res_close.confidence > res_far.confidence
 
     def test_scaled_average_proportional_to_plot_area(self, validator):
         # Double the plot area → double the expected quantity
         res_normal = validator.validate_item(
-            "Thermal Block (External Walls)", 466.0, "m2", "G+1", 153.0
+            "Thermal Block (External Walls)", 359.7, "m2", "G+1", 587.0
         )
         res_double = validator.validate_item(
-            "Thermal Block (External Walls)", 466.0, "m2", "G+1", 306.0
+            "Thermal Block (External Walls)", 359.7, "m2", "G+1", 1174.0
         )
         assert res_double.scaled_average == pytest.approx(
             res_normal.scaled_average * 2, rel=0.01

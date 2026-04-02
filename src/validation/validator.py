@@ -27,19 +27,56 @@ def _load_json(relative_path: str) -> dict:
 
 # ---------------------------------------------------------------------------
 # Mapping from BOQ description substrings → averages.json item keys
+# Order matters: more specific patterns must come before broad ones.
 # ---------------------------------------------------------------------------
 
 _DESC_TO_KEY: dict[str, str] = {
-    "thermal block": "thermal_block_external",
-    "internal plaster": "internal_plaster",
-    "external plaster": "external_plaster",
-    "external villa walls finish": "external_plaster",
-    "dry area flooring": "dry_area_flooring",
-    "wet areas flooring": "wet_area_flooring",
-    "wall tiles": "wall_tiles",
-    "roof waterproofing": "roof_waterproofing",
-    "false ceiling": "false_ceiling",
-    "interlock paving": "interlock_paving",
+    # Sub-structure
+    "foundation — plain cement":    "foundation_pcc",
+    "foundation — bitumen":         "foundation_bitumen",
+    "foundation — concrete":        "foundation_concrete",
+    "neck columns — concrete":      "neck_column_concrete",
+    "tie beams — concrete":         "tie_beam_concrete",
+    "slab on grade":                "slab_on_grade_concrete",
+    "excavation":                   "excavation",
+    "back filling":                 "back_filling",
+    "anti-termite":                 "anti_termite",
+    "polyethylene sheet":           "polyethylene_sheet",
+    "road base":                    "road_base",
+    # Super-structure
+    "slabs — concrete":             "slab_concrete",
+    "beams — concrete":             "beam_concrete",
+    "columns — concrete":           "column_concrete",
+    "staircase — concrete":         "staircase_concrete",
+    # Dry-area items placed in super-structure section by engine
+    "dry area flooring":            "dry_area_flooring",
+    "skirting":                     "skirting",
+    "paint (internal walls)":       "internal_paint",
+    "dry areas ceiling":            "ceiling_spray_plaster",
+    # Finishes — wet areas
+    "wet areas flooring":           "wet_area_flooring",
+    "wall tiles":                   "wall_tiles",
+    "wet areas ceiling":            "wet_area_flooring",   # 1:1 with wet flooring
+    "balcony flooring":             "balcony_flooring",
+    "marble threshold":             "marble_threshold",
+    # Finishes — block work (architecture)
+    "block 20cm — internal":        "block_20_internal",
+    "block 10cm":                   "block_10_internal",
+    "solid block work":             "solid_block_work",
+    # Finishes — plaster & paint
+    "internal plaster":             "internal_plaster",
+    "external villa walls finish":  "external_plaster",
+    "external plaster":             "external_plaster",
+    "external paint":               "external_paint",
+    # Finishes — waterproofing & roofing
+    "waterproofing (1st floor":     "wet_area_waterproofing",
+    "combo roof system":            "roof_waterproofing",
+    "roof waterproofing":           "roof_waterproofing",
+    "roof thermal insulation":      "roof_insulation",
+    # Finishes — scaled-from-average items
+    "thermal block":                "thermal_block_external",
+    "false ceiling":                "false_ceiling",
+    "interlock paving":             "interlock_paving",
 }
 
 
@@ -49,6 +86,23 @@ def _description_to_key(description: str) -> str | None:
         if substr in dl:
             return key
     return None
+
+
+# ---------------------------------------------------------------------------
+# Confidence cap by sample count — prevents 100% confidence on sparse data
+# ---------------------------------------------------------------------------
+
+def _n_confidence_cap(n: int) -> float:
+    """Return the maximum achievable confidence for a reference with n samples."""
+    if n == 0:
+        return 70.0    # estimated / no real measurement
+    if n == 1:
+        return 80.0    # single data point
+    if n < 5:
+        return 90.0    # very few projects
+    if n < 10:
+        return 95.0    # moderate sample
+    return 100.0       # well-sampled (n ≥ 10)
 
 
 # ---------------------------------------------------------------------------
@@ -117,12 +171,13 @@ class QTOValidator:
     ) -> ValidationResult:
         """
         Compare a single BOQ item against the scaled historical average.
-        Returns a ValidationResult with confidence score and flag.
+        Confidence is capped by the sample count of the reference data so that
+        items backed by a single project can never show 100% confidence.
         """
         tol = self._thresholds["range_tolerance"]
         conf_threshold = self._thresholds["confidence_threshold"]
 
-        avg_qty, avg_plot = self._get_average(item_name, project_type)
+        avg_qty, avg_plot, n = self._get_average(item_name, project_type)
 
         if avg_qty is None:
             # No reference data — assign neutral confidence
@@ -154,7 +209,10 @@ class QTOValidator:
 
         # Confidence decays linearly from 100% at 0% deviation to 0% at 2× tolerance
         raw_conf = max(0.0, 1.0 - (deviation / (2 * tol))) * 100.0
-        confidence = round(raw_conf, 1)
+
+        # Cap confidence based on how many real projects back this reference value
+        capped_conf = min(raw_conf, _n_confidence_cap(n))
+        confidence = round(capped_conf, 1)
 
         flag = self._flag(confidence)
         requires_review = confidence < conf_threshold
@@ -163,8 +221,10 @@ class QTOValidator:
         if requires_review:
             note = (
                 f"Deviation {deviation_pct:.1f}% from scaled average "
-                f"{scaled:.1f} {unit}. REQUIRES MANUAL REVIEW."
+                f"{scaled:.1f} {unit} (n={n}). REQUIRES MANUAL REVIEW."
             )
+        elif n < 5:
+            note = f"Reference based on only {n} project(s) — treat with caution."
 
         return ValidationResult(
             item_name=item_name,
@@ -293,17 +353,18 @@ class QTOValidator:
 
     def _get_average(
         self, item_name: str, project_type: str
-    ) -> tuple[float | None, float | None]:
-        """Return (avg_qty, avg_plot_area) for the item, or (None, None)."""
+    ) -> tuple[float | None, float | None, int]:
+        """Return (avg_qty, avg_plot_area, n) for the item, or (None, None, 0)."""
         key = _description_to_key(item_name)
         if key is None:
-            return None, None
+            return None, None, 0
 
         pt_data = self._averages.get(project_type, {})
         item_data = pt_data.get("items", {}).get(key, {})
         avg_qty = item_data.get("value")
         avg_plot = pt_data.get("meta", {}).get("avg_plot_area")
-        return avg_qty, avg_plot
+        n = item_data.get("n", 0)
+        return avg_qty, avg_plot, n
 
     def _flag(self, confidence: float) -> str:
         ct = self._thresholds["color_thresholds"]

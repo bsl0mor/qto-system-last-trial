@@ -1,15 +1,50 @@
 {
-  "confidence_threshold": 95.0,
-  "range_tolerance": 0.15,
-  "overall_confidence_threshold": 95.0,
+  "confidence_threshold": 80.0,
+  "range_tolerance": 0.20,
+  "overall_confidence_threshold": 80.0,
   "color_thresholds": {
-    "green": 95.0,
-    "yellow": 90.0,
+    "green": 80.0,
+    "yellow": 65.0,
     "red": 0.0
   },
+  "_ratio_notes": [
+    "Ratios derived from REFERENCE_BOQ.txt averages.",
+    "Only pairs with n≥5 in both numerator and denominator were used for G+1.",
+    "Tolerance applied by the validator: range_tolerance × 100 %.",
+    "G+1 averages used: thermal_block=359.7, block_20i=313.3, block_10i=129.4,",
+    "  internal_plaster=1141.8, external_plaster=611.8, dry_area=196.1,",
+    "  skirting=173.5, false_ceiling=198.9, interlock=297.0, staircase=6.6,",
+    "  tie_beam=19.2, neck_col=3.4, foundation_concrete=56.9.",
+    "G+2 averages used: thermal_block=448.6, block_20i=347.2, block_10i=148.5,",
+    "  ceiling=330.9, false_ceiling=157.1, dry_area=336.8."
+  ],
   "ratio_checks": {
     "G+1": {
-      "external_plaster_to_thermal_block_external": 0.805
+      "thermal_block_external_to_block_20_internal":   1.149,
+      "block_10_internal_to_block_20_internal":        0.413,
+      "external_plaster_to_thermal_block_external":    1.700,
+      "internal_plaster_to_dry_area_flooring":         5.822,
+      "false_ceiling_to_dry_area_flooring":            1.014,
+      "skirting_to_dry_area_flooring":                 0.885,
+      "interlock_paving_to_dry_area_flooring":         1.515,
+      "staircase_concrete_to_tie_beam_concrete":       0.344,
+      "neck_column_concrete_to_tie_beam_concrete":     0.177,
+      "foundation_concrete_to_tie_beam_concrete":      2.963
+    },
+    "G+2": {
+      "thermal_block_external_to_block_20_internal":   1.292,
+      "block_10_internal_to_block_20_internal":        0.428,
+      "false_ceiling_to_dry_area_flooring":            0.466,
+      "ceiling_spray_plaster_to_dry_area_flooring":    0.982,
+      "internal_plaster_to_dry_area_flooring":         4.126
+    },
+    "G": {
+      "thermal_block_external_to_block_20_internal":   1.393,
+      "block_10_internal_to_block_20_internal":        0.324
+    },
+    "G+1 Service": {
+      "thermal_block_external_to_block_20_internal":   1.143,
+      "block_10_internal_to_block_20_internal":        0.481
     }
   }
 }
