@@ -29,10 +29,10 @@
         "n": 37
       },
       "neck_column_concrete": {
-        "value": 3.4,
+        "value": 45.2,
         "unit": "m3",
-        "min": 0.5,
-        "max": 22.0,
+        "min": 8.0,
+        "max": 200.0,
         "n": 28
       },
       "tie_beam_concrete": {
@@ -43,7 +43,7 @@
         "n": 22
       },
       "back_filling": {
-        "value": 981.0,
+        "value": 939.0,
         "unit": "m3",
         "min": 200.0,
         "max": 2500.0,

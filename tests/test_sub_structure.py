@@ -76,7 +76,7 @@ class TestNeckColumns:
         assert res["height_m"] == pytest.approx(expected_height, rel=1e-6)
 
     def test_volume_formula(self, calc):
-        # Volume = width × length × height × count  (section area, not perimeter)
+        # Volume = Perimeter × height × count  (per PDF equations spec)
         w, l, count = 0.3, 0.3, 4
         gfl, exc_depth, tb_depth, pcc = 0.3, 1.5, 0.4, 0.1
         res = calc.calculate_neck_columns(
@@ -84,7 +84,8 @@ class TestNeckColumns:
             gfl, exc_depth, tb_depth, pcc
         )
         height = gfl + exc_depth - tb_depth - pcc
-        expected_vol = w * l * height * count
+        perimeter = 2 * (w + l)
+        expected_vol = perimeter * height * count
         assert res["volume_m3"] == pytest.approx(expected_vol, rel=1e-6)
 
     def test_empty_columns(self, calc):
