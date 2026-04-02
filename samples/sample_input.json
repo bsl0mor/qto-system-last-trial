@@ -14,10 +14,11 @@
   "longest_length": 14.0,
   "longest_width": 11.0,
   "external_perimeter": 50.0,
-  "internal_wall_length_20cm": 40.0,
-  "internal_wall_length_10cm": 20.0,
-  "dry_area_perimeter": 80.0,
+  "internal_wall_length_20cm": 80.0,
+  "internal_wall_length_10cm": 40.0,
+  "dry_area_perimeter": 160.0,
   "roof_area": 100.0,
+  "total_floor_area": 200.0,
   "has_road_base": false,
   "main_door_area": 4.0,
   "stair_width": 1.20,
@@ -58,22 +59,33 @@
   ],
 
   "rooms": [
-    { "room_type": "bedroom",  "area": 18.0, "perimeter": 17.2 },
-    { "room_type": "bedroom",  "area": 16.0, "perimeter": 16.4 },
-    { "room_type": "bedroom",  "area": 15.0, "perimeter": 15.6 },
     { "room_type": "living",   "area": 30.0, "perimeter": 22.0 },
     { "room_type": "dining",   "area": 14.0, "perimeter": 15.0 },
     { "room_type": "kitchen",  "area": 12.0, "perimeter": 14.0 },
     { "room_type": "toilet",   "area":  4.0, "perimeter":  8.0 },
+    { "room_type": "bedroom",  "area": 18.0, "perimeter": 17.2 },
+    { "room_type": "laundry",  "area":  3.5, "perimeter":  7.6 },
+    { "room_type": "bedroom",  "area": 16.0, "perimeter": 16.4 },
+    { "room_type": "bedroom",  "area": 15.0, "perimeter": 15.6 },
+    { "room_type": "bedroom",  "area": 14.0, "perimeter": 15.2 },
     { "room_type": "bathroom", "area":  5.5, "perimeter":  9.4 },
     { "room_type": "bathroom", "area":  5.0, "perimeter":  9.0 },
-    { "room_type": "laundry",  "area":  3.5, "perimeter":  7.6 },
-    { "room_type": "balcony",  "area": 10.0, "perimeter": 13.0 }
+    { "room_type": "bathroom", "area":  4.5, "perimeter":  8.6 },
+    { "room_type": "balcony",  "area": 10.0, "perimeter": 13.0 },
+    { "room_type": "living",   "area": 20.0, "perimeter": 18.0 },
+    { "room_type": "bedroom",  "area": 16.0, "perimeter": 16.4 },
+    { "room_type": "kitchen",  "area":  8.0, "perimeter": 11.4 },
+    { "room_type": "bathroom", "area":  4.5, "perimeter":  8.6 },
+    { "room_type": "toilet",   "area":  3.5, "perimeter":  7.4 }
   ],
 
   "first_floor_rooms": [
-    { "room_type": "bathroom", "area": 5.5, "perimeter": 9.4 },
-    { "room_type": "bathroom", "area": 5.0, "perimeter": 9.0 },
+    { "room_type": "bedroom",  "area": 16.0, "perimeter": 16.4 },
+    { "room_type": "bedroom",  "area": 15.0, "perimeter": 15.6 },
+    { "room_type": "bedroom",  "area": 14.0, "perimeter": 15.2 },
+    { "room_type": "bathroom", "area":  5.5, "perimeter":  9.4 },
+    { "room_type": "bathroom", "area":  5.0, "perimeter":  9.0 },
+    { "room_type": "bathroom", "area":  4.5, "perimeter":  8.6 },
     { "room_type": "balcony",  "area": 10.0, "perimeter": 13.0 }
   ],
 
@@ -86,11 +98,9 @@
 
   "walls": [
     { "type": "external",     "length": 50.0,  "thickness": 0.25 },
-    { "type": "internal_20",  "length": 40.0,  "thickness": 0.20 },
-    { "type": "internal_10",  "length": 20.0,  "thickness": 0.10 }
+    { "type": "internal_20",  "length": 80.0,  "thickness": 0.20 },
+    { "type": "internal_10",  "length": 40.0,  "thickness": 0.10 }
   ],
-
-  "total_floor_area": 153.0,
 
   "thermal_block_schedule_area": null,
   "interlock_paving_area": null,

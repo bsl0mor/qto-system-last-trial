@@ -6,30 +6,30 @@
       "avg_cost_aed": 641278
     },
     "items": {
-      "thermal_block_external": { "value": 466.0, "unit": "m2" },
-      "internal_plaster": { "value": 1144.3, "unit": "m2" },
-      "external_plaster": { "value": 718.8, "unit": "m2" },
-      "dry_area_flooring": { "value": 248.7, "unit": "m2" },
-      "wet_area_flooring": { "value": 317.1, "unit": "m2" },
-      "wall_tiles": { "value": 305.0, "unit": "m2" },
-      "roof_waterproofing": { "value": 121.8, "unit": "m2" },
-      "false_ceiling": { "value": 259.0, "unit": "m2" },
-      "interlock_paving": { "value": 358.4, "unit": "m2" }
+      "thermal_block_external":  { "value": 466.0,  "unit": "m2" },
+      "internal_plaster":        { "value": 808.0,  "unit": "m2" },
+      "external_plaster":        { "value": 375.0,  "unit": "m2" },
+      "dry_area_flooring":       { "value": 149.5,  "unit": "m2" },
+      "wet_area_flooring":       { "value":  50.5,  "unit": "m2" },
+      "wall_tiles":              { "value": 210.0,  "unit": "m2" },
+      "roof_waterproofing":      { "value": 121.8,  "unit": "m2" },
+      "false_ceiling":           { "value": 259.0,  "unit": "m2" },
+      "interlock_paving":        { "value": 358.4,  "unit": "m2" }
     }
   },
   "G+2": {
     "meta": {
       "project_count": 46,
-      "avg_plot_area": 3108,
+      "avg_plot_area": 250,
       "avg_cost_aed": 927255
     },
     "items": {
-      "thermal_block_external": { "value": 689.1, "unit": "m2" },
-      "internal_plaster": { "value": 1822.9, "unit": "m2" },
-      "dry_area_flooring": { "value": 287.9, "unit": "m2" },
-      "wet_area_flooring": { "value": 104.0, "unit": "m2" },
-      "false_ceiling": { "value": 301.4, "unit": "m2" },
-      "interlock_paving": { "value": 420.9, "unit": "m2" }
+      "thermal_block_external":  { "value": 689.1,  "unit": "m2" },
+      "internal_plaster":        { "value": 1822.9, "unit": "m2" },
+      "dry_area_flooring":       { "value": 287.9,  "unit": "m2" },
+      "wet_area_flooring":       { "value": 104.0,  "unit": "m2" },
+      "false_ceiling":           { "value": 301.4,  "unit": "m2" },
+      "interlock_paving":        { "value": 420.9,  "unit": "m2" }
     }
   },
   "G": {

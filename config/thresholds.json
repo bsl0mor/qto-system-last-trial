@@ -9,7 +9,7 @@
   },
   "ratio_checks": {
     "G+1": {
-      "external_plaster_to_thermal_block_external": 1.54
+      "external_plaster_to_thermal_block_external": 0.805
     }
   }
 }

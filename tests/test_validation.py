@@ -90,13 +90,11 @@ class TestValidateItem:
 
 class TestValidateRatios:
     def test_external_plaster_to_thermal_block_ratio_g1(self, validator):
-        # G+1 expected ratio = 1.54
+        # G+1 expected ratio = 0.805 (external_plaster / thermal_block_external)
         # key: external_plaster_to_thermal_block_external
-        # numerator key: external_plaster  → "External Villa Walls Finish"
-        # denominator key: thermal_block_external → "Thermal Block (External Walls)"
         boq = [
             {"description": "Thermal Block (External Walls)", "quantity": 466.0, "unit": "m2"},
-            {"description": "External Villa Walls Finish", "quantity": 466.0 * 1.54, "unit": "m2"},
+            {"description": "External Villa Walls Finish", "quantity": 466.0 * 0.805, "unit": "m2"},
         ]
         results = validator.validate_ratios(boq, "G+1")
         # Should have at least one ratio result
@@ -142,7 +140,7 @@ class TestValidateAll:
         # All items at exact average → all confidence = 100% → overall = 100%
         boq = [
             {"description": "Thermal Block (External Walls)", "quantity": 466.0, "unit": "m2"},
-            {"description": "Dry Area Flooring", "quantity": 248.7, "unit": "m2"},
+            {"description": "Dry Area Flooring", "quantity": 149.5, "unit": "m2"},
         ]
         report = validator.validate_all(boq, "G+1", 153.0)
         assert report.overall_confidence == pytest.approx(100.0, abs=0.5)
