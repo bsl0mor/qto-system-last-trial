@@ -115,7 +115,7 @@ class QTOEngine:
         # SUPER-STRUCTURE
         # ------------------------------------------------------------------
         boq.extend(self._calc_super_structure(
-            data, floor_height, slab_thickness
+            data, floor_height, slab_thickness, project_type
         ))
 
         # ------------------------------------------------------------------
@@ -158,6 +158,14 @@ class QTOEngine:
             items.append(_item("A.3", "Foundation — Bitumen Waterproofing", "m2",
                                f_res["bitumen_area_m2"], "Sub-Structure",
                                "foundation_bitumen", r))
+            # A.17 Foundation Rebar
+            f_rebar = self.sub_calc.calculate_rebar_foundations(footings)
+            items.append(_item("A.17", "Foundation — Reinforcement Steel (Grade 60)", "kg",
+                               f_rebar["kg"], "Sub-Structure", "foundation_rebar", r))
+            # A.22 Foundation Formwork
+            f_form = self.sub_calc.calculate_formwork_foundation(footings)
+            items.append(_item("A.22", "Foundation — Formwork / Side Shuttering", "m2",
+                               f_form["area_m2"], "Sub-Structure", "foundation_formwork", r))
             f_pcc_area = sum(
                 (ff.get("length", 0) + 0.20) * (ff.get("width", 0) + 0.20) * ff.get("count", 1)
                 for ff in footings
@@ -176,6 +184,10 @@ class QTOEngine:
             items.append(_item("A.5", "Neck Columns — Formwork", "m2",
                                nc_res["volume_m3"] / max(0.20 * 0.30, 0.001),
                                "Sub-Structure", "neck_column_formwork", r))
+            # A.18 Neck Column Rebar
+            nc_rebar = self.sub_calc.calculate_rebar_neck_columns(nc_res["volume_m3"])
+            items.append(_item("A.18", "Neck Columns — Reinforcement Steel (Grade 60)", "kg",
+                               nc_rebar["kg"], "Sub-Structure", "neck_column_rebar", r))
 
         # --- Tie Beams ---
         if tie_beams:
@@ -189,6 +201,10 @@ class QTOEngine:
             items.append(_item("A.8", "Tie Beams — Bitumen Waterproofing", "m2",
                                tb_res["bitumen_area_m2"], "Sub-Structure",
                                "tie_beam_bitumen", r))
+            # A.19 Tie Beam Rebar
+            tb_rebar = self.sub_calc.calculate_rebar_tie_beams(tb_res["volume_m3"])
+            items.append(_item("A.19", "Tie Beams — Reinforcement Steel (Grade 60)", "kg",
+                               tb_rebar["kg"], "Sub-Structure", "tie_beam_rebar", r))
             tb_pcc_area = sum(
                 b.get("length", 0) * (b.get("width", 0) + 0.20) * b.get("count", 1)
                 for b in tie_beams
@@ -214,9 +230,17 @@ class QTOEngine:
                            sog_res["volume_m3"], "Sub-Structure",
                            "slab_on_grade_concrete", r))
         sog_area = sog_res["area_m2"]
+        # A.20 Slab on Grade Rebar
+        sog_rebar = self.sub_calc.calculate_rebar_slab_on_grade(sog_res["volume_m3"])
+        items.append(_item("A.20", "Slab on Grade — Reinforcement Steel (Grade 60)", "kg",
+                           sog_rebar["kg"], "Sub-Structure", "slab_on_grade_rebar", r))
+        # A.21 Sand Filling
+        sf_thick = data.get("sand_fill_thickness", 0.30)
+        sf_res = self.sub_calc.calculate_sand_filling(gf_area, sf_thick)
+        items.append(_item("A.21", "Sand Filling Under Ground Floor Slab", "m3",
+                           sf_res["volume_m3"], "Sub-Structure", "sand_filling", r))
 
         # --- Excavation ---
-        # Determine longest dimensions from footprint or data
         if longest_length == 0.0 or longest_width == 0.0:
             side = math.sqrt(plot_area)
             longest_length = longest_length or side * 1.2
@@ -229,7 +253,6 @@ class QTOEngine:
         exc_area = exc_res["area_m2"]
 
         # --- Back Filling ---
-        # Collect all sub-structure volumes for deduction
         all_vols = sum(
             it["quantity"] for it in items
             if it["unit"] == "m3" and it["category"] == "Sub-Structure"
@@ -267,7 +290,8 @@ class QTOEngine:
     # SUPER-STRUCTURE helpers
     # ==================================================================
     def _calc_super_structure(
-        self, data: dict, floor_height: float, slab_thickness: float
+        self, data: dict, floor_height: float, slab_thickness: float,
+        project_type: str = "G+1"
     ) -> list[dict]:
         items: list[dict] = []
         r = self._rates
@@ -291,11 +315,21 @@ class QTOEngine:
             items.append(_item("B.1", "Slabs — Concrete (Grade C30)", "m3",
                                sl_res["volume_m3"], "Super-Structure",
                                "slab_concrete", r))
+            sl_rebar = self.sup_calc.calculate_rebar_slabs(sl_res["volume_m3"])
+            items.append(_item("B.8", "Slabs — Reinforcement Steel (Grade 60)", "kg",
+                               sl_rebar["kg"], "Super-Structure", "slab_rebar", r))
+            sl_form = self.sup_calc.calculate_formwork_slabs(slabs)
+            items.append(_item("B.9", "Slabs — Formwork / Soffit Shuttering", "m2",
+                               sl_form["area_m2"], "Super-Structure", "slab_formwork", r))
         else:
-            # Estimate from floor area
+            # Estimate from floor area when no slab schedule provided
             est_vol = total_floor_area * slab_thickness
             items.append(_item("B.1", "Slabs — Concrete (Grade C30) [estimated]", "m3",
                                est_vol, "Super-Structure", "slab_concrete", r))
+            items.append(_item("B.8", "Slabs — Reinforcement Steel (Grade 60) [estimated]", "kg",
+                               round(est_vol * 100, 1), "Super-Structure", "slab_rebar", r))
+            items.append(_item("B.9", "Slabs — Formwork / Soffit Shuttering [estimated]", "m2",
+                               total_floor_area, "Super-Structure", "slab_formwork", r))
 
         # --- Beams ---
         if beams:
@@ -303,6 +337,12 @@ class QTOEngine:
             items.append(_item("B.2", "Beams — Concrete (Grade C30)", "m3",
                                bm_res["volume_m3"], "Super-Structure",
                                "beam_concrete", r))
+            bm_rebar = self.sup_calc.calculate_rebar_beams(bm_res["volume_m3"])
+            items.append(_item("B.10", "Beams — Reinforcement Steel (Grade 60)", "kg",
+                               bm_rebar["kg"], "Super-Structure", "beam_rebar", r))
+            bm_form = self.sup_calc.calculate_formwork_beams(beams, slab_thickness)
+            items.append(_item("B.11", "Beams — Formwork / Shuttering", "m2",
+                               bm_form["area_m2"], "Super-Structure", "beam_formwork", r))
 
         # --- Columns ---
         if columns:
@@ -310,6 +350,26 @@ class QTOEngine:
             items.append(_item("B.3", "Columns — Concrete (Grade C30)", "m3",
                                col_res["volume_m3"], "Super-Structure",
                                "column_concrete", r))
+            col_rebar = self.sup_calc.calculate_rebar_columns(col_res["volume_m3"])
+            items.append(_item("B.12", "Columns — Reinforcement Steel (Grade 60)", "kg",
+                               col_rebar["kg"], "Super-Structure", "column_rebar", r))
+            col_form = self.sup_calc.calculate_formwork_columns(columns, floor_height)
+            items.append(_item("B.13", "Columns — Formwork / Shuttering", "m2",
+                               col_form["area_m2"], "Super-Structure", "column_formwork", r))
+
+        # --- Staircase (all multi-floor project types) ---
+        if project_type != "G":
+            stair_width = data.get("stair_width", 1.20)
+            stair_count = data.get("stair_count", 1)
+            stair_res = self.sup_calc.calculate_staircase(
+                floor_height, stair_width, stair_count, slab_thickness
+            )
+            items.append(_item("B.14", "Staircase — Concrete (Grade C30)", "m3",
+                               stair_res["volume_m3"], "Super-Structure",
+                               "staircase_concrete", r))
+            stair_rebar_kg = round(stair_res["volume_m3"] * 120, 1)
+            items.append(_item("B.15", "Staircase — Reinforcement Steel (Grade 60)", "kg",
+                               stair_rebar_kg, "Super-Structure", "staircase_rebar", r))
 
         # --- Dry Area Flooring ---
         daf_res = self.sup_calc.calculate_dry_area_flooring(total_floor_area, wet_area)
@@ -518,5 +578,32 @@ class QTOEngine:
                            rw["area_m2"], "Finishes",
                            "roof_waterproofing", r,
                            confidence_note=f"source={rw['source']}"))
+
+        # --- External Paint ---
+        ep = fc.calculate_external_paint(evwf["area_m2"])
+        items.append(_item("C.19", "External Paint (Masonry / Textured)", "m2",
+                           ep["area_m2"], "Finishes", "external_paint", r))
+
+        # --- Roof Screed ---
+        rs = fc.calculate_roof_screed(roof_area)
+        items.append(_item("C.20", "Roof Screed (Sand-Cement for Falls — 50 mm avg.)", "m2",
+                           rs["area_m2"], "Finishes", "roof_screed", r))
+
+        # --- Damp Proof Course ---
+        dpc = fc.calculate_dpc(ext_perimeter, len_20, len_10)
+        items.append(_item("C.21", "Damp Proof Course — DPC (Hessian Based)", "RM",
+                           dpc["length_rm"], "Finishes", "dpc", r))
+
+        # --- Kitchen / Pantry Countertop ---
+        kc = fc.calculate_kitchen_countertop(rooms)
+        items.append(_item("C.22", "Kitchen / Pantry Countertop (Granite)", "RM",
+                           kc["length_rm"], "Finishes", "kitchen_countertop", r))
+
+        # --- Boundary Wall ---
+        boundary_perimeter = data.get("boundary_perimeter", 4 * math.sqrt(plot_area))
+        boundary_height = data.get("boundary_wall_height", 2.5)
+        bw = fc.calculate_boundary_wall(boundary_perimeter, boundary_height)
+        items.append(_item("C.23", "Boundary Wall — Block Work (20 cm)", "m2",
+                           bw["area_m2"], "Finishes", "boundary_wall", r))
 
         return items

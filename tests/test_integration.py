@@ -69,8 +69,8 @@ class TestBOQGeneration:
         assert len(boq_results) > 0
 
     def test_boq_has_50_or_more_items(self, boq_results):
-        # The system specification requires 50+ items
-        assert len(boq_results) >= 20   # realistic for sample (some items conditional)
+        # The system specification requires 51+ items
+        assert len(boq_results) >= 51
 
     def test_all_items_have_required_fields(self, boq_results):
         required = {"item_no", "description", "unit", "quantity", "category"}

@@ -59,6 +59,42 @@
       "category": "Sub-Structure",
       "unit": "m3",
       "formula": "exc_area × thickness (default 0.25m)"
+    },
+    {
+      "name": "Foundation Reinforcement Steel",
+      "category": "Sub-Structure",
+      "unit": "kg",
+      "formula": "foundation_concrete_volume × 90 kg/m³"
+    },
+    {
+      "name": "Neck Column Reinforcement Steel",
+      "category": "Sub-Structure",
+      "unit": "kg",
+      "formula": "neck_column_concrete_volume × 150 kg/m³"
+    },
+    {
+      "name": "Tie Beam Reinforcement Steel",
+      "category": "Sub-Structure",
+      "unit": "kg",
+      "formula": "tie_beam_concrete_volume × 120 kg/m³"
+    },
+    {
+      "name": "Slab on Grade Reinforcement Steel",
+      "category": "Sub-Structure",
+      "unit": "kg",
+      "formula": "slab_on_grade_concrete_volume × 75 kg/m³"
+    },
+    {
+      "name": "Foundation Formwork",
+      "category": "Sub-Structure",
+      "unit": "m2",
+      "formula": "2 × (width + length) × depth × count (4 side faces per footing)"
+    },
+    {
+      "name": "Sand Filling Under Ground Floor Slab",
+      "category": "Sub-Structure",
+      "unit": "m3",
+      "formula": "gf_area × thickness (default 0.30 m)"
     }
   ],
   "super_structure": [
@@ -103,6 +139,54 @@
       "category": "Super-Structure",
       "unit": "m2",
       "formula": "= dry_areas_flooring"
+    },
+    {
+      "name": "Slab Reinforcement Steel",
+      "category": "Super-Structure",
+      "unit": "kg",
+      "formula": "slab_concrete_volume × 100 kg/m³"
+    },
+    {
+      "name": "Beam Reinforcement Steel",
+      "category": "Super-Structure",
+      "unit": "kg",
+      "formula": "beam_concrete_volume × 150 kg/m³"
+    },
+    {
+      "name": "Column Reinforcement Steel",
+      "category": "Super-Structure",
+      "unit": "kg",
+      "formula": "column_concrete_volume × 175 kg/m³"
+    },
+    {
+      "name": "Slab Formwork",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "formula": "sum of slab areas (soffit shuttering)"
+    },
+    {
+      "name": "Beam Formwork",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "formula": "length × (width + 2 × net_depth) × count; net_depth = depth - slab_thickness"
+    },
+    {
+      "name": "Column Formwork",
+      "category": "Super-Structure",
+      "unit": "m2",
+      "formula": "2 × (width + length) × floor_height × qty"
+    },
+    {
+      "name": "Staircase — Concrete",
+      "category": "Super-Structure",
+      "unit": "m3",
+      "formula": "(inclined_waist_vol + step_vol + landing_vol) × stair_count; waist = inclined_len × width × 0.15"
+    },
+    {
+      "name": "Staircase — Reinforcement Steel",
+      "category": "Super-Structure",
+      "unit": "kg",
+      "formula": "staircase_concrete_volume × 120 kg/m³"
     }
   ],
   "finishes": [
@@ -213,6 +297,36 @@
       "category": "Finishes",
       "unit": "m2",
       "formula": "per average data / project-specific schedule"
+    },
+    {
+      "name": "External Paint",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "= external_villa_walls_finish_area (same surface)"
+    },
+    {
+      "name": "Roof Screed",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "= roof_area (sand-cement screed for drainage falls)"
+    },
+    {
+      "name": "Damp Proof Course (DPC)",
+      "category": "Finishes",
+      "unit": "RM",
+      "formula": "external_perimeter + internal_wall_length_20cm + internal_wall_length_10cm"
+    },
+    {
+      "name": "Kitchen / Pantry Countertop",
+      "category": "Finishes",
+      "unit": "RM",
+      "formula": "3.5 RM per kitchen + 2.5 RM per pantry"
+    },
+    {
+      "name": "Boundary Wall — Block Work",
+      "category": "Finishes",
+      "unit": "m2",
+      "formula": "boundary_perimeter × wall_height (default height 2.5 m)"
     }
   ]
 }

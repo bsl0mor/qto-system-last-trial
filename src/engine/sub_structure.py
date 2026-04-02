@@ -49,6 +49,14 @@ class SolidBlockWall:
 
 PCC_THICKNESS = 0.10   # m  (10 cm)
 
+# Standard rebar ratios (kg per m³ of concrete) — UAE industry norms
+REBAR_KG_PER_M3 = {
+    "foundation": 90,
+    "neck_column": 150,
+    "tie_beam": 120,
+    "slab_on_grade": 75,
+}
+
 
 class SubStructureCalculator:
     """
@@ -285,6 +293,85 @@ class SubStructureCalculator:
         volume = exc_area * thickness
         return {
             "area_m2": round(exc_area, 3),
+            "thickness_m": thickness,
+            "volume_m3": round(volume, 3),
+        }
+
+    # ------------------------------------------------------------------
+    # 11. Foundation Reinforcement Steel
+    # ------------------------------------------------------------------
+    def calculate_rebar_foundations(
+        self, footings: list, kg_per_m3: float = REBAR_KG_PER_M3["foundation"]
+    ) -> dict:
+        """
+        Rebar mass = foundation_concrete_volume × kg_per_m3
+        """
+        f_res = self.calculate_foundation(footings)
+        return {"kg": round(f_res["volume_m3"] * kg_per_m3, 1)}
+
+    # ------------------------------------------------------------------
+    # 12. Neck Column Reinforcement Steel
+    # ------------------------------------------------------------------
+    def calculate_rebar_neck_columns(
+        self, volume_m3: float, kg_per_m3: float = REBAR_KG_PER_M3["neck_column"]
+    ) -> dict:
+        """
+        Rebar mass = neck_column_concrete_volume × kg_per_m3
+        """
+        return {"kg": round(volume_m3 * kg_per_m3, 1)}
+
+    # ------------------------------------------------------------------
+    # 13. Tie Beam Reinforcement Steel
+    # ------------------------------------------------------------------
+    def calculate_rebar_tie_beams(
+        self, volume_m3: float, kg_per_m3: float = REBAR_KG_PER_M3["tie_beam"]
+    ) -> dict:
+        """
+        Rebar mass = tie_beam_concrete_volume × kg_per_m3
+        """
+        return {"kg": round(volume_m3 * kg_per_m3, 1)}
+
+    # ------------------------------------------------------------------
+    # 14. Slab on Grade Reinforcement Steel
+    # ------------------------------------------------------------------
+    def calculate_rebar_slab_on_grade(
+        self, volume_m3: float, kg_per_m3: float = REBAR_KG_PER_M3["slab_on_grade"]
+    ) -> dict:
+        """
+        Rebar mass = slab_on_grade_concrete_volume × kg_per_m3
+        """
+        return {"kg": round(volume_m3 * kg_per_m3, 1)}
+
+    # ------------------------------------------------------------------
+    # 15. Foundation Formwork (side shuttering)
+    # ------------------------------------------------------------------
+    def calculate_formwork_foundation(
+        self, footings: list
+    ) -> dict:
+        """
+        Area = perimeter × depth × count  (4 side faces per footing)
+        """
+        total = 0.0
+        for f in footings:
+            w = f["width"] if isinstance(f, dict) else f.width
+            l = f["length"] if isinstance(f, dict) else f.length
+            d = f["depth"] if isinstance(f, dict) else f.depth
+            n = f.get("count", 1) if isinstance(f, dict) else f.count
+            total += 2 * (w + l) * d * n
+        return {"area_m2": round(total, 3)}
+
+    # ------------------------------------------------------------------
+    # 16. Sand Filling Under Ground Floor Slab
+    # ------------------------------------------------------------------
+    def calculate_sand_filling(
+        self, gf_area: float, thickness: float = 0.30
+    ) -> dict:
+        """
+        Volume = gf_area × thickness (default 30 cm compacted sand bed)
+        """
+        volume = gf_area * thickness
+        return {
+            "area_m2": round(gf_area, 3),
             "thickness_m": thickness,
             "volume_m3": round(volume, 3),
         }

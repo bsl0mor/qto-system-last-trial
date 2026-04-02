@@ -245,7 +245,7 @@ class FinishesCalculator:
         details = []
 
         for o in openings:
-            otype = o["opening_type"] if isinstance(o, dict) else o.opening_type
+            otype = o.get("opening_type", o.get("type", "")) if isinstance(o, dict) else o.opening_type
             w = o["width"] if isinstance(o, dict) else o.width
             h = o["height"] if isinstance(o, dict) else o.height
             n = o.get("count", 1) if isinstance(o, dict) else o.count
@@ -374,6 +374,78 @@ class FinishesCalculator:
             return {"area_m2": round(scaled, 3), "source": "scaled_average"}
 
         return {"area_m2": 0.0, "source": "unavailable"}
+
+    # ------------------------------------------------------------------
+    # 18. External Paint
+    # ------------------------------------------------------------------
+    def calculate_external_paint(self, external_walls_area: float) -> dict:
+        """
+        External paint applied over rendered external walls.
+        Area = external_villa_walls_finish_area  (same surface)
+        """
+        return {"area_m2": round(external_walls_area, 3)}
+
+    # ------------------------------------------------------------------
+    # 19. Roof Screed (for drainage falls)
+    # ------------------------------------------------------------------
+    def calculate_roof_screed(self, roof_area: float) -> dict:
+        """
+        Sand-cement screed on roof slab to form drainage falls.
+        Area = roof_area  (measured on plan)
+        """
+        return {"area_m2": round(roof_area, 3)}
+
+    # ------------------------------------------------------------------
+    # 20. Damp Proof Course (DPC)
+    # ------------------------------------------------------------------
+    def calculate_dpc(
+        self,
+        external_perimeter: float,
+        internal_wall_length_20cm: float = 0.0,
+        internal_wall_length_10cm: float = 0.0,
+    ) -> dict:
+        """
+        Hessian-based DPC applied at base of all walls at ground floor level.
+        Length (RM) = external_perimeter + all internal wall lengths
+        """
+        total = external_perimeter + internal_wall_length_20cm + internal_wall_length_10cm
+        return {"length_rm": round(total, 3)}
+
+    # ------------------------------------------------------------------
+    # 21. Kitchen / Pantry Countertop
+    # ------------------------------------------------------------------
+    def calculate_kitchen_countertop(self, rooms: list) -> dict:
+        """
+        Granite / stone countertop in running metres.
+        Standard allowance: kitchen = 3.5 RM, pantry = 2.5 RM each.
+        """
+        total = 0.0
+        for room in rooms:
+            rt = (
+                room.get("room_type", "").lower()
+                if isinstance(room, dict)
+                else room.room_type.lower()
+            )
+            if rt == "kitchen":
+                total += 3.5
+            elif rt == "pantry":
+                total += 2.5
+        return {"length_rm": round(total, 3)}
+
+    # ------------------------------------------------------------------
+    # 22. Boundary Wall — Block Work
+    # ------------------------------------------------------------------
+    def calculate_boundary_wall(
+        self,
+        boundary_perimeter: float,
+        boundary_wall_height: float = 2.5,
+    ) -> dict:
+        """
+        Plot boundary wall.
+        Area = boundary_perimeter × wall_height (default 2.5 m privacy wall)
+        """
+        area = boundary_perimeter * boundary_wall_height
+        return {"area_m2": round(area, 3)}
 
     # ------------------------------------------------------------------
     # Private helpers
