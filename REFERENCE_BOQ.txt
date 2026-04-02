@@ -1,0 +1,296 @@
+
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  REFERENCE BOQ  —  G (Ground Only)  (5 projects)
+  ★ = Market Rate  |  ~ = Estimated Qty (no training data)  |  n = sample count from trained projects
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  #   Item Description                           Unit    Avg Qty       Min       Max    n      Avg Rate      Line Total
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ── SUBSTRUCTURE ──
+  1   Excavation                                 m³        192.5~       -         -     ~          60.00★      AED 11,550
+  2   PCC Blinding Under Footings                m³         28.1       28.1      28.1    2        500.00★      AED 14,050
+  3   RCC Footings                               m³         81.0       81.0      81.0    2      1,200.00★      AED 97,188
+  4   Neck Columns                               m³          0.6        0.6       0.6    1      1,400.00★         AED 840
+  5   Tie Beams / Ground Beams                   m³         10.5~       -         -     ~       1,250.00★      AED 13,125
+  6   Backfill & Compaction                      m³        253.0~       -         -     ~          60.00★      AED 15,180
+  7   Ground Floor Slab (SOG)                    m³         13.8~       -         -     ~         750.00★      AED 10,350
+  8   Polythene Sheet / DPM                      m²         90.0       90.0      90.0    1          8.00★         AED 720
+  9   Anti-Termite Treatment                     m²        137.5~       -         -     ~          10.00★       AED 1,375
+  10  Bitumen / DPC Waterproofing                m²         82.5~       -         -     ~          10.00★         AED 825
+  11  Road Base / Hardcore                       m³         13.8~       -         -     ~         100.00★       AED 1,380
+                                                                                                 ─────────────────────────
+                                                                                  Substructure Subtotal:    AED 166,583
+
+  ── SUPERSTRUCTURE ──
+  12  RCC Columns                                m³          6.6~       -         -     ~       1,400.00★       AED 9,240
+                                                                                                 ─────────────────────────
+                                                                                  Superstructure Subtotal:      AED 9,240
+
+  ── ARCHITECTURE ──
+  13  External Thermal Block (250mm)             m²        100.7      100.7     100.7    2        130.00★      AED 13,085
+  14  Internal Hollow Block (200mm)              m²         72.3       72.3      72.3    2        100.00★       AED 7,230
+  15  Internal Hollow Block (100mm)              m²         23.4       23.4      23.4    2         90.00★       AED 2,111
+  16  Solid Block Work                           m²         42.4~       -         -     ~          95.00★       AED 4,028
+  17  Parapet Wall                               m²         46.8~       -         -     ~         150.00★       AED 7,020
+  18  Boundary / Compound Wall                   LM         33.0~       -         -     ~         800.00★      AED 26,400
+  19  Coping Stones                              LM         44.0~       -         -     ~          80.00★       AED 3,520
+  20  Kerb Stones                                LM         19.3~       -         -     ~          40.00★         AED 772
+                                                                                                 ─────────────────────────
+                                                                                  Architecture Subtotal:     AED 64,165
+
+  ── FINISHES ──
+  21  Internal Plastering                        m²        628.1~       -         -     ~          30.00★      AED 18,843
+  22  External Plastering / Render               m²        336.6~       -         -     ~          35.00★      AED 11,781
+  23  Internal Paint (Emulsion)                  m²        450.5~       -         -     ~          20.00★       AED 9,010
+  24  External Paint / Texture                   m²        375.1~       -         -     ~          35.00★      AED 13,129
+  25  Ceiling Spray Plaster / Gypsum             m²         54.7       54.7      54.7    2         25.00★       AED 1,368
+  26  False Ceiling (Gypsum/Grid)                m²        109.5~       -         -     ~         100.00★      AED 10,950
+  27  Dry Area Flooring (Tiles)                  m²         95.0       95.0      95.0    1        150.00       AED 14,250
+  28  Wet Area Flooring (Tiles)                  m²         26.4~       -         -     ~         100.00★       AED 2,640
+  29  Balcony / Terrace Flooring                 m²         13.8~       -         -     ~         120.00★       AED 1,656
+  30  Wall Tiles (Wet Areas)                     m²         66.0~       -         -     ~         100.00★       AED 6,600
+  31  Skirting                                   LM         95.7~       -         -     ~          60.00★       AED 5,742
+  32  Marble Thresholds                          LM          4.3        4.3       4.3    1         80.00★         AED 344
+  33  Wet Area / Balcony Waterproofing           m²         19.3~       -         -     ~          55.00★       AED 1,062
+  34  Roof Waterproofing (SBS/Torch)             m²        123.8~       -         -     ~          50.00★       AED 6,190
+  35  Roof Thermal Insulation                    m²        100.0      100.0     100.0    1         20.00★       AED 2,000
+                                                                                                 ─────────────────────────
+                                                                                  Finishes Subtotal:    AED 105,564
+
+  ── EXTERNAL WORKS ──
+  36  Interlock Paving                           m²        163.4~       -         -     ~          80.00★      AED 13,072
+                                                                                                 ─────────────────────────
+                                                                                  External Works Subtotal:     AED 13,072
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ESTIMATED TOTAL VILLA COST (Structure + Finishes only — excludes MEP/AC/Doors/Kitchen)             AED 358,624
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  REFERENCE BOQ  —  G+1  (101 projects)
+  Avg Plot Area : 587 m²
+  ★ = Market Rate  |  ~ = Estimated Qty (no training data)  |  n = sample count from trained projects
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  #   Item Description                           Unit    Avg Qty       Min       Max    n      Avg Rate      Line Total
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ── SUBSTRUCTURE ──
+  1   Excavation                                 m³        792.0      792.0     792.0    1         40.00       AED 31,680
+  2   PCC Blinding Under Footings                m³         15.2        3.0      24.3   21        533.33        AED 8,107
+  3   RCC Footings                               m³         56.9       11.0     215.4   37      1,200.00       AED 68,244
+  4   Neck Columns                               m³          3.4        0.5      22.0   28      1,400.00        AED 4,802
+  5   Tie Beams / Ground Beams                   m³         19.2        8.6      52.0   22      1,250.00       AED 23,975
+  6   Backfill & Compaction                      m³        461.8       28.0     856.0   17         60.00★      AED 27,706
+  7   Ground Floor Slab (SOG)                    m³         25.0       15.7      33.0    7        733.34       AED 18,319
+  8   Polythene Sheet / DPM                      m²        111.5       90.0     133.0    2         10.00        AED 1,115
+  9   Anti-Termite Treatment                     m²        620.0      620.0     620.0    1         10.00        AED 6,200
+  10  Bitumen / DPC Waterproofing                m²        150.0~       -         -     ~           8.00        AED 1,200
+  11  Road Base / Hardcore                       m³         24.8       17.6      34.3    3        100.00★       AED 2,481
+                                                                                                 ─────────────────────────
+                                                                                  Substructure Subtotal:    AED 193,828
+
+  ── SUPERSTRUCTURE ──
+  12  RCC Columns                                m³          1.0        1.0       1.0    2      1,400.00★       AED 1,400
+  13  1st Floor Slab                             m³        127.0       83.9     170.0    2      1,200.00      AED 152,364
+  14  1st Floor Slab Beams                       m³          3.0        1.0       5.0    2      1,250.00★       AED 3,725
+  15  Roof / 2nd Floor Slab                      m³         68.0       68.0      68.0    1      1,200.00★      AED 81,624
+  16  Roof / 2nd Floor Beams                     m³          7.0~       -         -     ~       1,250.00★       AED 8,750
+  17  Internal Staircases                        m³          6.6        1.0      18.5   28        960.00        AED 6,298
+                                                                                                 ─────────────────────────
+                                                                                  Superstructure Subtotal:    AED 254,161
+
+  ── ARCHITECTURE ──
+  18  External Thermal Block (250mm)             m²        359.7       50.9     900.9   42        163.89       AED 58,951
+  19  Internal Hollow Block (200mm)              m²        313.3       63.0   1,092.8   39        103.33       AED 32,370
+  20  Internal Hollow Block (100mm)              m²        129.4       20.6     403.9   37         95.00       AED 12,296
+  21  Solid Block Work                           m²         77.3       21.6     181.3    6         95.00★       AED 7,346
+  22  Parapet Wall                               m²         85.0~       -         -     ~         150.00★      AED 12,750
+  23  Boundary / Compound Wall                   LM         60.0       60.0      60.0    1        900.00       AED 54,000
+  24  Coping Stones                              LM        149.1      149.1     149.1    1         80.00★      AED 11,928
+  25  Kerb Stones                                LM         35.2       23.2      53.2    8         40.00★       AED 1,407
+                                                                                                 ─────────────────────────
+                                                                                  Architecture Subtotal:    AED 191,049
+
+  ── FINISHES ──
+  26  Internal Plastering                        m²      1,141.8      220.5   2,913.6   30         30.00       AED 34,253
+  27  External Plastering / Render               m²        611.8       52.6   1,000.0   31         33.75       AED 20,647
+  28  Internal Paint (Emulsion)                  m²        818.9      408.8   2,169.7   26         20.60       AED 16,869
+  29  External Paint / Texture                   m²        681.8       62.5     967.4   25         35.00       AED 23,863
+  30  Ceiling Spray Plaster / Gypsum             m²        248.5       52.3     613.5   17         25.00        AED 6,212
+  31  False Ceiling (Gypsum/Grid)                m²        198.9       32.2     350.0   18        122.50       AED 24,366
+  32  Dry Area Flooring (Tiles)                  m²        196.1       65.0     400.0   32         92.19       AED 18,079
+  33  Wet Area Flooring (Tiles)                  m²         47.6       20.0     132.4    7        100.00★       AED 4,759
+  34  Balcony / Terrace Flooring                 m²         25.0~       -         -     ~         120.00★       AED 3,000
+  35  Wall Tiles (Wet Areas)                     m²        319.1       33.2     584.0    4        100.00★      AED 31,909
+  36  Skirting                                   LM        173.5       51.2     350.0   21         70.71       AED 12,266
+  37  Marble Thresholds                          LM         13.1        4.3      20.0    4         80.00★       AED 1,046
+  38  Wet Area / Balcony Waterproofing           m²         34.5       28.0      40.0    6         75.00        AED 2,588
+  39  Roof Waterproofing (SBS/Torch)             m²        225.1       61.0     371.4   18         50.00★      AED 11,253
+  40  Roof Thermal Insulation                    m²         90.0       90.0      90.0    1         20.00★       AED 1,800
+                                                                                                 ─────────────────────────
+                                                                                  Finishes Subtotal:    AED 212,909
+
+  ── EXTERNAL WORKS ──
+  41  Interlock Paving                           m²        297.0       32.0     696.0   27         70.00       AED 20,789
+                                                                                                 ─────────────────────────
+                                                                                  External Works Subtotal:     AED 20,789
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ESTIMATED TOTAL VILLA COST (Structure + Finishes only — excludes MEP/AC/Doors/Kitchen)             AED 872,736
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  REFERENCE BOQ  —  G+2  (46 projects)
+  Avg Plot Area : 1,767 m²
+  ★ = Market Rate  |  ~ = Estimated Qty (no training data)  |  n = sample count from trained projects
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  #   Item Description                           Unit    Avg Qty       Min       Max    n      Avg Rate      Line Total
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ── SUBSTRUCTURE ──
+  1   Excavation                                 m³        729.4      729.4     729.4    1         60.00★      AED 43,766
+  2   PCC Blinding Under Footings                m³         21.3       21.3      21.3    1        500.00★      AED 10,645
+  3   RCC Footings                               m³         82.6~       -         -     ~       1,200.00★      AED 99,120
+  4   Neck Columns                               m³          7.8        7.8       7.8    1      1,400.00★      AED 10,948
+  5   Tie Beams / Ground Beams                   m³         16.8       13.7      20.0    2      1,250.00★      AED 21,050
+  6   Backfill & Compaction                      m³        667.0~       -         -     ~          60.00★      AED 40,020
+  7   Ground Floor Slab (SOG)                    m³         22.3       15.8      28.7    2        750.00★      AED 16,695
+  8   Polythene Sheet / DPM                      m²        362.5~       -         -     ~           8.00★       AED 2,900
+  9   Anti-Termite Treatment                     m²        362.5~       -         -     ~          10.00★       AED 3,625
+  10  Bitumen / DPC Waterproofing                m²        217.5~       -         -     ~          10.00★       AED 2,175
+  11  Road Base / Hardcore                       m³        132.5      132.5     132.5    1        100.00★      AED 13,251
+                                                                                                 ─────────────────────────
+                                                                                  Substructure Subtotal:    AED 264,195
+
+  ── SUPERSTRUCTURE ──
+  12  RCC Columns                                m³         17.4~       -         -     ~       1,400.00★      AED 24,360
+  13  1st Floor Slab                             m³         28.0       28.0      28.0    1      1,200.00★      AED 33,600
+  14  1st Floor Slab Beams                       m³         11.6~       -         -     ~       1,250.00★      AED 14,500
+  15  Roof / 2nd Floor Slab                      m³         32.0       32.0      32.0    1      1,200.00★      AED 38,400
+  16  Roof / 2nd Floor Beams                     m³         10.2~       -         -     ~       1,250.00★      AED 12,750
+  17  Internal Staircases                        m³          3.4        3.4       3.4    1      1,200.00★       AED 4,080
+                                                                                                 ─────────────────────────
+                                                                                  Superstructure Subtotal:    AED 127,690
+
+  ── ARCHITECTURE ──
+  18  External Thermal Block (250mm)             m²        448.6       84.7     806.0    3        130.00★      AED 58,321
+  19  Internal Hollow Block (200mm)              m²        347.2       92.5     730.3    4        100.00★      AED 34,720
+  20  Internal Hollow Block (100mm)              m²        148.5       25.6     356.6    5         90.00★      AED 13,363
+  21  Solid Block Work                           m²        104.8       59.6     150.0    2         95.00★       AED 9,955
+  22  Parapet Wall                               m²        101.0      101.0     101.0    1        150.00★      AED 15,143
+  23  Boundary / Compound Wall                   LM         87.0~       -         -     ~         800.00★      AED 69,600
+  24  Coping Stones                              LM        121.2      121.2     121.2    1         80.00★       AED 9,696
+  25  Kerb Stones                                LM         35.0       35.0      35.0    1         40.00★       AED 1,400
+                                                                                                 ─────────────────────────
+                                                                                  Architecture Subtotal:    AED 212,197
+
+  ── FINISHES ──
+  26  Internal Plastering                        m²      1,389.7      956.5   1,822.9    2         30.00★      AED 41,692
+  27  External Plastering / Render               m²        392.8      392.8     392.8    1         35.00★      AED 13,749
+  28  Internal Paint (Emulsion)                  m²        944.6      780.2   1,109.0    2         20.00★      AED 18,892
+  29  External Paint / Texture                   m²        426.2      426.2     426.2    1         35.00★      AED 14,918
+  30  Ceiling Spray Plaster / Gypsum             m²        330.9      275.0     446.0    4         25.00★       AED 8,272
+  31  False Ceiling (Gypsum/Grid)                m²        157.1       57.0     446.0    4         62.70        AED 9,848
+  32  Dry Area Flooring (Tiles)                  m²        336.8      132.8     500.0    5         90.00       AED 30,309
+  33  Wet Area Flooring (Tiles)                  m²         62.0       20.0     104.0    2        100.00★       AED 6,200
+  34  Balcony / Terrace Flooring                 m²         36.3~       -         -     ~         120.00★       AED 4,356
+  35  Wall Tiles (Wet Areas)                     m²        174.0~       -         -     ~         100.00★      AED 17,400
+  36  Skirting                                   LM        198.4       80.0     344.0    3         45.65        AED 9,056
+  37  Marble Thresholds                          LM         14.0       14.0      14.0    1         80.00★       AED 1,120
+  38  Wet Area / Balcony Waterproofing           m²         28.0       28.0      28.0    1         30.80          AED 862
+  39  Roof Waterproofing (SBS/Torch)             m²        326.3~       -         -     ~          50.00★      AED 16,315
+  40  Roof Thermal Insulation                    m²        326.3~       -         -     ~          20.00★       AED 6,526
+                                                                                                 ─────────────────────────
+                                                                                  Finishes Subtotal:    AED 199,517
+
+  ── EXTERNAL WORKS ──
+  41  Interlock Paving                           m²        291.3       32.0     483.8    3         80.00★      AED 23,301
+                                                                                                 ─────────────────────────
+                                                                                  External Works Subtotal:     AED 23,301
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ESTIMATED TOTAL VILLA COST (Structure + Finishes only — excludes MEP/AC/Doors/Kitchen)             AED 826,899
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  REFERENCE BOQ  —  G+1 Service Block  (7 projects)
+  ★ = Market Rate  |  ~ = Estimated Qty (no training data)  |  n = sample count from trained projects
+════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  #   Item Description                           Unit    Avg Qty       Min       Max    n      Avg Rate      Line Total
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  ── SUBSTRUCTURE ──
+  1   Excavation                                 m³        245.0~       -         -     ~          60.00★      AED 14,700
+  2   PCC Blinding Under Footings                m³         10.5~       -         -     ~         500.00★       AED 5,250
+  3   RCC Footings                               m³         11.5       11.5      11.5    1      1,200.00★      AED 13,764
+  4   Neck Columns                               m³          1.1        1.1       1.1    1      1,400.00★       AED 1,540
+  5   Tie Beams / Ground Beams                   m³         13.3~       -         -     ~       1,250.00★      AED 16,625
+  6   Backfill & Compaction                      m³        322.0~       -         -     ~          60.00★      AED 19,320
+  7   Ground Floor Slab (SOG)                    m³         17.5~       -         -     ~         750.00★      AED 13,125
+  8   Polythene Sheet / DPM                      m²        175.0~       -         -     ~           8.00★       AED 1,400
+  9   Anti-Termite Treatment                     m²        175.0~       -         -     ~          10.00★       AED 1,750
+  10  Bitumen / DPC Waterproofing                m²        105.0~       -         -     ~          10.00★       AED 1,050
+  11  Road Base / Hardcore                       m³         17.5~       -         -     ~         100.00★       AED 1,750
+                                                                                                 ─────────────────────────
+                                                                                  Substructure Subtotal:     AED 90,274
+
+  ── SUPERSTRUCTURE ──
+  12  RCC Columns                                m³          8.4~       -         -     ~       1,400.00★      AED 11,760
+  13  1st Floor Slab                             m³         21.0~       -         -     ~       1,200.00★      AED 25,200
+  14  1st Floor Slab Beams                       m³          5.6~       -         -     ~       1,250.00★       AED 7,000
+  15  Roof / 2nd Floor Slab                      m³         19.6~       -         -     ~       1,200.00★      AED 23,520
+  16  Roof / 2nd Floor Beams                     m³          4.9~       -         -     ~       1,250.00★       AED 6,125
+  17  Internal Staircases                        m³          4.6~       -         -     ~       1,200.00★       AED 5,520
+                                                                                                 ─────────────────────────
+                                                                                  Superstructure Subtotal:     AED 79,125
+
+  ── ARCHITECTURE ──
+  18  External Thermal Block (250mm)             m²        146.2      146.2     146.2    1        130.00★      AED 19,011
+  19  Internal Hollow Block (200mm)              m²        127.9       55.8     200.0    2        100.00★      AED 12,790
+  20  Internal Hollow Block (100mm)              m²         61.5       23.0     100.0    2         90.00★       AED 5,535
+  21  Solid Block Work                           m²         53.9~       -         -     ~          95.00★       AED 5,121
+  22  Parapet Wall                               m²         59.5~       -         -     ~         150.00★       AED 8,925
+  23  Boundary / Compound Wall                   LM         42.0~       -         -     ~         800.00★      AED 33,600
+  24  Coping Stones                              LM         56.0~       -         -     ~          80.00★       AED 4,480
+  25  Kerb Stones                                LM         24.5~       -         -     ~          40.00★         AED 980
+                                                                                                 ─────────────────────────
+                                                                                  Architecture Subtotal:     AED 90,442
+
+  ── FINISHES ──
+  26  Internal Plastering                        m²        262.0      262.0     262.0    1         30.00★       AED 7,860
+  27  External Plastering / Render               m²        278.4      278.4     278.4    1         35.00★       AED 9,744
+  28  Internal Paint (Emulsion)                  m²      2,456.0    2,456.0   2,456.0    1         20.00★      AED 49,120
+  29  External Paint / Texture                   m²        278.4      278.4     278.4    1         35.00★       AED 9,744
+  30  Ceiling Spray Plaster / Gypsum             m²        250.0      250.0     250.0    1         25.00★       AED 6,250
+  31  False Ceiling (Gypsum/Grid)                m²        284.0      284.0     284.0    1        100.00★      AED 28,400
+  32  Dry Area Flooring (Tiles)                  m²        137.2~       -         -     ~          90.00★      AED 12,348
+  33  Wet Area Flooring (Tiles)                  m²         33.6~       -         -     ~         100.00★       AED 3,360
+  34  Balcony / Terrace Flooring                 m²         17.5~       -         -     ~         120.00★       AED 2,100
+  35  Wall Tiles (Wet Areas)                     m²         84.0~       -         -     ~         100.00★       AED 8,400
+  36  Skirting                                   LM        623.0      623.0     623.0    1         50.00       AED 31,150
+  37  Marble Thresholds                          LM          9.1~       -         -     ~          80.00★         AED 728
+  38  Wet Area / Balcony Waterproofing           m²         24.5~       -         -     ~          55.00★       AED 1,348
+  39  Roof Waterproofing (SBS/Torch)             m²        157.5~       -         -     ~          50.00★       AED 7,875
+  40  Roof Thermal Insulation                    m²        157.5~       -         -     ~          20.00★       AED 3,150
+                                                                                                 ─────────────────────────
+                                                                                  Finishes Subtotal:    AED 181,577
+
+  ── EXTERNAL WORKS ──
+  41  Interlock Paving                           m²        207.9~       -         -     ~          80.00★      AED 16,632
+                                                                                                 ─────────────────────────
+                                                                                  External Works Subtotal:     AED 16,632
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ESTIMATED TOTAL VILLA COST (Structure + Finishes only — excludes MEP/AC/Doors/Kitchen)             AED 458,049
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════════════
+  SUMMARY — Average Villa Cost by Type (Structure + Finishes)
+════════════════════════════════════════════════════════════════════════════════
+  Type                   Projects  Avg Plot m²  Estimated Total
+────────────────────────────────────────────────────────────────────────────────
+  G (Ground Only)               5            0      AED 358,624
+  G+1                         101          587      AED 872,736
+  G+2                          46        1,767      AED 826,899
+  G+1 Service Block             7            0      AED 458,049
+════════════════════════════════════════════════════════════════════════════════
