@@ -231,9 +231,15 @@ class QTOEngine:
         exc_area = exc_res["area_m2"]
 
         # --- Back Filling ---
+        # Only deduct concrete/masonry placed in the pit — NOT excavation or
+        # sand-fill (which is itself a back-fill material) and NOT PCC volumes
+        # (already embedded in the concrete items they belong to).
+        _EXCLUDE_FROM_BACKFILL = {"A.12", "A.13"}
         all_vols = sum(
             it["quantity"] for it in items
-            if it["unit"] == "m3" and it["category"] == "Sub-Structure"
+            if it["unit"] == "m3"
+            and it["category"] == "Sub-Structure"
+            and it["item_no"] not in _EXCLUDE_FROM_BACKFILL
         )
         bf_res = self.sub_calc.calculate_back_filling(
             exc_area, exc_depth, gfsl_level, all_vols

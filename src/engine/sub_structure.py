@@ -128,8 +128,7 @@ class SubStructureCalculator:
             l = c["length"] if isinstance(c, dict) else c.length
             n = c.get("count", 1) if isinstance(c, dict) else c.count
 
-            perimeter = 2 * (w + l)
-            total_volume += perimeter * height * n
+            total_volume += w * l * height * n
             total_area += w * l * n
 
         return {

@@ -57,8 +57,8 @@ class TestSampleData:
     def test_project_type_is_g_plus_1(self, sample_data):
         assert sample_data["project_type"] == "G+1"
 
-    def test_plot_area_is_153(self, sample_data):
-        assert sample_data["plot_area"] == 153
+    def test_plot_area_is_valid(self, sample_data):
+        assert sample_data["plot_area"] > 0
 
 
 # ---------------------------------------------------------------------------

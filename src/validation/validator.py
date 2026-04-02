@@ -62,7 +62,7 @@ _DESC_TO_KEY: dict[str, str] = {
     # Finishes — block work (architecture)
     "block 20cm — internal":        "block_20_internal",
     "block 10cm":                   "block_10_internal",
-    "solid block work":             "solid_block_work",
+    "solid block work (below grade)": "solid_block_work",
     # Finishes — plaster & paint
     "internal plaster":             "internal_plaster",
     "external villa walls finish":  "external_plaster",
