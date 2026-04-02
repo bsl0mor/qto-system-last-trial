@@ -147,74 +147,7 @@ class QTOEngine:
         has_road_base = data.get("has_road_base", False)
         road_base_thickness = data.get("road_base_thickness", 0.25)
 
-        # Collect all bitumen areas to combine into a single item at the end
-        total_bitumen = 0.0
-
-        # --- Foundation ---
-        if footings:
-            f_res = self.sub_calc.calculate_foundation(footings)
-            items.append(_item("A.1", "Footing Concrete (Grade C30)", "m3",
-                               f_res["volume_m3"], "Sub-Structure",
-                               "foundation_concrete", r))
-            items.append(_item("A.2", "PCC — Footings", "m3",
-                               f_res["pcc_volume_m3"], "Sub-Structure",
-                               "foundation_pcc", r))
-            total_bitumen += f_res["bitumen_area_m2"]
-            f_pcc_area = sum(
-                (ff.get("length", 0) + 0.20) * (ff.get("width", 0) + 0.20) * ff.get("count", 1)
-                for ff in footings
-            )
-        else:
-            f_pcc_area = 0.0
-
-        # --- Neck Columns ---
-        if neck_cols:
-            nc_res = self.sub_calc.calculate_neck_columns(
-                neck_cols, gfl, exc_depth, tb_depth, pcc_thickness
-            )
-            items.append(_item("A.3", "Neck Column Concrete (Grade C30)", "m3",
-                               nc_res["volume_m3"], "Sub-Structure",
-                               "neck_column_concrete", r))
-
-        # --- Tie Beams ---
-        if tie_beams:
-            tb_res = self.sub_calc.calculate_tie_beams(tie_beams)
-            items.append(_item("A.4", "Tie Beam Concrete (Grade C30)", "m3",
-                               tb_res["volume_m3"], "Sub-Structure",
-                               "tie_beam_concrete", r))
-            items.append(_item("A.5", "PCC — Tie Beams", "m3",
-                               tb_res["pcc_volume_m3"], "Sub-Structure",
-                               "tie_beam_pcc", r))
-            total_bitumen += tb_res["bitumen_area_m2"]
-            tb_pcc_area = sum(
-                b.get("length", 0) * (b.get("width", 0) + 0.20) * b.get("count", 1)
-                for b in tie_beams
-            )
-        else:
-            tb_pcc_area = 0.0
-
-        # --- Solid Block Work ---
-        if solid_walls:
-            sbw_res = self.sub_calc.calculate_solid_block_work(
-                solid_walls, gfl, exc_depth, tb_depth, pcc_thickness
-            )
-            items.append(_item("A.6", "Solid Block Wall (Below Grade)", "m2",
-                               sbw_res["area_m2"], "Sub-Structure",
-                               "solid_block_work", r))
-            total_bitumen += sbw_res["bitumen_area_m2"]
-
-        # --- Combined Bitumen Waterproofing ---
-        items.append(_item("A.7", "Bitumen Waterproofing", "m2",
-                           total_bitumen, "Sub-Structure", "bitumen", r))
-
-        # --- Slab on Grade ---
-        sog_res = self.sub_calc.calculate_slab_on_grade(gf_area)
-        items.append(_item("A.8", "Slab on Grade Concrete (Grade C30)", "m3",
-                           sog_res["volume_m3"], "Sub-Structure",
-                           "slab_on_grade_concrete", r))
-        sog_area = sog_res["area_m2"]
-
-        # --- Excavation ---
+        # Pre-calculate excavation so road_base can follow immediately
         plot_area = data.get("plot_area", 153.0)
         if longest_length == 0.0 or longest_width == 0.0:
             side = math.sqrt(plot_area)
@@ -222,21 +155,126 @@ class QTOEngine:
             longest_width = longest_width or side * 0.9
 
         exc_res = self.sub_calc.calculate_excavation(longest_length, longest_width, exc_depth)
-        items.append(_item("A.9", "Excavation", "m3",
-                           exc_res["volume_m3"], "Sub-Structure",
-                           "excavation", r))
         exc_area = exc_res["area_m2"]
 
-        # --- Road Base (optional) ---
+        # ---- ORDER matches user spec exactly ----
+        # 1. Excavation
+        items.append(_item("A.1", "Excavation", "m3",
+                           exc_res["volume_m3"], "Sub-Structure",
+                           "excavation", r))
+
+        # 2. Road Base (optional — only present when has_road_base=True)
         if has_road_base:
             rb_res = self.sub_calc.calculate_road_base(exc_area, road_base_thickness)
-            items.append(_item("A.10", "Road Base (Compacted)", "m3",
+            items.append(_item("A.2", "Road Base (Compacted)", "m3",
                                rb_res["volume_m3"], "Sub-Structure",
                                "road_base", r))
 
-        # --- Back Filling ---
-        # Exclude excavation volume itself; deduct all sub-structure m3 items placed in pit
-        _EXCLUDE_BACKFILL = {"A.9", "A.10"}
+        # Collect all bitumen areas to combine into a single item later
+        total_bitumen = 0.0
+        f_pcc_area = 0.0
+        tb_pcc_area = 0.0
+
+        # Pre-calculate all foundation/column/beam values (not appended yet)
+        f_pcc_vol = f_conc_vol = 0.0
+        f_bitumen = 0.0
+        if footings:
+            f_res = self.sub_calc.calculate_foundation(footings)
+            f_pcc_vol = f_res["pcc_volume_m3"]
+            f_conc_vol = f_res["volume_m3"]
+            f_bitumen = f_res["bitumen_area_m2"]
+            total_bitumen += f_bitumen
+            f_pcc_area = sum(
+                (ff.get("length", 0) + 0.20) * (ff.get("width", 0) + 0.20) * ff.get("count", 1)
+                for ff in footings
+            )
+
+        tb_pcc_vol = tb_conc_vol = 0.0
+        tb_bitumen = 0.0
+        if tie_beams:
+            tb_res = self.sub_calc.calculate_tie_beams(tie_beams)
+            tb_pcc_vol = tb_res["pcc_volume_m3"]
+            tb_conc_vol = tb_res["volume_m3"]
+            tb_bitumen = tb_res["bitumen_area_m2"]
+            total_bitumen += tb_bitumen
+            tb_pcc_area = sum(
+                b.get("length", 0) * (b.get("width", 0) + 0.20) * b.get("count", 1)
+                for b in tie_beams
+            )
+
+        nc_conc_vol = 0.0
+        if neck_cols:
+            nc_res = self.sub_calc.calculate_neck_columns(
+                neck_cols, gfl, exc_depth, tb_depth, pcc_thickness
+            )
+            nc_conc_vol = nc_res["volume_m3"]
+
+        sbw_area = sbw_bitumen = 0.0
+        if solid_walls:
+            sbw_res = self.sub_calc.calculate_solid_block_work(
+                solid_walls, gfl, exc_depth, tb_depth, pcc_thickness
+            )
+            sbw_area = sbw_res["area_m2"]
+            sbw_bitumen = sbw_res["bitumen_area_m2"]
+            total_bitumen += sbw_bitumen
+
+        sog_res = self.sub_calc.calculate_slab_on_grade(gf_area)
+        sog_area = sog_res["area_m2"]
+
+        # 3. pcc_footings
+        if footings:
+            items.append(_item("A.3", "PCC — Footings", "m3",
+                               f_pcc_vol, "Sub-Structure", "foundation_pcc", r))
+
+        # 4. pcc_tb
+        if tie_beams:
+            items.append(_item("A.4", "PCC — Tie Beams", "m3",
+                               tb_pcc_vol, "Sub-Structure", "tie_beam_pcc", r))
+
+        # 5. footing_concrete
+        if footings:
+            items.append(_item("A.5", "Footing Concrete (Grade C30)", "m3",
+                               f_conc_vol, "Sub-Structure", "foundation_concrete", r))
+
+        # 6. neck_column
+        if neck_cols:
+            items.append(_item("A.6", "Neck Column Concrete (Grade C30)", "m3",
+                               nc_conc_vol, "Sub-Structure", "neck_column_concrete", r))
+
+        # 7. tb_concrete
+        if tie_beams:
+            items.append(_item("A.7", "Tie Beam Concrete (Grade C30)", "m3",
+                               tb_conc_vol, "Sub-Structure", "tie_beam_concrete", r))
+
+        # 8. bitumen (combined)
+        items.append(_item("A.8", "Bitumen Waterproofing", "m2",
+                           total_bitumen, "Sub-Structure", "bitumen", r))
+
+        # 9. blockwall_solid_sub
+        if solid_walls:
+            items.append(_item("A.9", "Solid Block Wall (Below Grade)", "m2",
+                               sbw_area, "Sub-Structure", "solid_block_work", r))
+
+        # 10. slab_on_grade
+        items.append(_item("A.10", "Slab on Grade Concrete (Grade C30)", "m3",
+                           sog_res["volume_m3"], "Sub-Structure",
+                           "slab_on_grade_concrete", r))
+
+        # 11. polythene
+        total_pcc_area = f_pcc_area + tb_pcc_area
+        ps_res = self.sub_calc.calculate_polyethylene_sheet(total_pcc_area, sog_area)
+        items.append(_item("A.11", "Polythene Sheet (1000 gauge)", "m2",
+                           ps_res["area_m2"], "Sub-Structure",
+                           "polyethylene_sheet", r))
+
+        # 12. anti_termite
+        at_res = self.sub_calc.calculate_anti_termite(total_pcc_area, sog_area)
+        items.append(_item("A.12", "Anti-Termite Treatment", "m2",
+                           at_res["area_m2"], "Sub-Structure",
+                           "anti_termite", r))
+
+        # 13. backfill — deduct all concrete/masonry placed in the pit
+        _EXCLUDE_BACKFILL = {"A.1", "A.2"}
         all_vols = sum(
             it["quantity"] for it in items
             if it["unit"] == "m3"
@@ -246,22 +284,9 @@ class QTOEngine:
         bf_res = self.sub_calc.calculate_back_filling(
             exc_area, exc_depth, gfsl_level, all_vols
         )
-        items.append(_item("A.11", "Back Fill", "m3",
+        items.append(_item("A.13", "Back Fill", "m3",
                            bf_res["net_volume_m3"], "Sub-Structure",
                            "back_filling", r))
-
-        # --- Anti-Termite ---
-        total_pcc_area = f_pcc_area + tb_pcc_area
-        at_res = self.sub_calc.calculate_anti_termite(total_pcc_area, sog_area)
-        items.append(_item("A.12", "Anti-Termite Treatment", "m2",
-                           at_res["area_m2"], "Sub-Structure",
-                           "anti_termite", r))
-
-        # --- Polyethylene Sheet ---
-        ps_res = self.sub_calc.calculate_polyethylene_sheet(total_pcc_area, sog_area)
-        items.append(_item("A.13", "Polythene Sheet (1000 gauge)", "m2",
-                           ps_res["area_m2"], "Sub-Structure",
-                           "polyethylene_sheet", r))
 
         return items
 
@@ -306,45 +331,45 @@ class QTOEngine:
             items.append(_item("B.2", "Columns — First Floor (Grade C30)", "m3",
                                res["volume_m3"], "Super-Structure", "ff_columns", r))
 
+        # --- FF Beams (before FF Slab per spec) ---
+        if ff_beams and project_type != "G":
+            res = self.sup_calc.calculate_beams(ff_beams, slab_thickness)
+            items.append(_item("B.3", "Beams — First Floor (Grade C30)", "m3",
+                               res["volume_m3"], "Super-Structure", "ff_beams", r))
+
         # --- FF Slab ---
         if ff_slabs and project_type != "G":
             res = self.sup_calc.calculate_slabs(ff_slabs)
-            items.append(_item("B.3", "Slab — First Floor (Grade C30)", "m3",
+            items.append(_item("B.4", "Slab — First Floor (Grade C30)", "m3",
                                res["volume_m3"], "Super-Structure", "ff_slab", r))
 
-        # --- FF Beams ---
-        if ff_beams and project_type != "G":
-            res = self.sup_calc.calculate_beams(ff_beams, slab_thickness)
-            items.append(_item("B.4", "Beams — First Floor (Grade C30)", "m3",
-                               res["volume_m3"], "Super-Structure", "ff_beams", r))
+        # --- Roof Beams (before Roof Slab per spec) ---
+        if roof_beams:
+            res = self.sup_calc.calculate_beams(roof_beams, slab_thickness)
+            items.append(_item("B.5", "Beams — Roof (Grade C30)", "m3",
+                               res["volume_m3"], "Super-Structure", "roof_beams", r))
 
         # --- Roof Slab ---
         if roof_slabs:
             res = self.sup_calc.calculate_slabs(roof_slabs)
-            items.append(_item("B.5", "Slab — Roof (Grade C30)", "m3",
+            items.append(_item("B.6", "Slab — Roof (Grade C30)", "m3",
                                res["volume_m3"], "Super-Structure", "roof_slab", r))
 
-        # --- Roof Beams ---
-        if roof_beams:
-            res = self.sup_calc.calculate_beams(roof_beams, slab_thickness)
-            items.append(_item("B.6", "Beams — Roof (Grade C30)", "m3",
-                               res["volume_m3"], "Super-Structure", "roof_beams", r))
-
-        # --- Parapet Block Work ---
+        # --- Parapet Concrete Capping (before Block per spec) ---
         if parapet_perimeter > 0:
-            pb_res = self.sup_calc.calculate_parapet_block(
-                parapet_perimeter, parapet_height
-            )
-            items.append(_item("B.7", "Parapet — Block Work", "m2",
-                               pb_res["area_m2"], "Super-Structure", "parapet_block", r))
-
-            # --- Parapet Concrete Capping ---
             pc_res = self.sup_calc.calculate_parapet_concrete(
                 parapet_perimeter, parapet_thickness, parapet_capping_h
             )
-            items.append(_item("B.8", "Parapet — Concrete Capping (Grade C25)", "m3",
+            items.append(_item("B.7", "Parapet — Concrete Capping (Grade C25)", "m3",
                                pc_res["volume_m3"], "Super-Structure",
                                "parapet_concrete", r))
+
+            # --- Parapet Block Work ---
+            pb_res = self.sup_calc.calculate_parapet_block(
+                parapet_perimeter, parapet_height
+            )
+            items.append(_item("B.8", "Parapet — Block Work", "m2",
+                               pb_res["area_m2"], "Super-Structure", "parapet_block", r))
 
         return items
 
