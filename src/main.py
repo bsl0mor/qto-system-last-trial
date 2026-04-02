@@ -1,14 +1,15 @@
 """
 QTO System — Command-line interface.
 
+Accepts PDF and DWG/DXF architectural drawings only.
+
 Usage
 -----
 python src/main.py --input drawing.dxf --type G+1 --output boq.xlsx --plot-area 153
 python src/main.py --input drawing.dwg --type G+1 --output boq.xlsx --plot-area 153
-python src/main.py --sample --type G+1 --output boq.xlsx --plot-area 153
-python src/main.py --input plan.pdf --type G+1 --output boq.xlsx --api-key YOUR_KEY
-python src/main.py --input plan.pdf --type G+1 --output boq.xlsx --api-key YOUR_KEY \\
-                   --gemini-model gemini-2.5-pro --max-pages 5
+python src/main.py --input plan.pdf   --type G+1 --output boq.xlsx --api-key YOUR_KEY
+python src/main.py --input plan.pdf   --type G+1 --output boq.xlsx \\
+                   --api-key YOUR_KEY --gemini-model gemini-2.5-pro --max-pages 5
 """
 
 from __future__ import annotations
@@ -60,10 +61,9 @@ def _parse_file(input_path: str, api_key: str | None, gemini_model: str, max_pag
             if ext == ".dwg":
                 sys.exit(
                     f"[ERROR] Could not open DWG file: {exc}\n"
-                    "Tip: AutoCAD DWG files are not natively supported. "
-                    "Export/Save-As to DXF format from AutoCAD or use the free "
-                    "ODA File Converter (https://www.opendesign.com — search 'ODA File Converter'), "
-                    "then re-run with the .dxf file."
+                    "Tip: DWG files must first be converted to DXF.\n"
+                    "Use the free ODA File Converter "
+                    "(https://www.opendesign.com) then re-run with the .dxf file."
                 )
             sys.exit(f"[ERROR] Failed to parse DXF file: {exc}")
     elif ext == ".pdf":
@@ -83,10 +83,14 @@ def _parse_file(input_path: str, api_key: str | None, gemini_model: str, max_pag
                 f"Run: pip install google-generativeai pdf2image Pillow\n{exc}"
             )
     elif ext == ".json":
+        # JSON is supported for development / sample runs only
         with open(input_path, encoding="utf-8") as fh:
             return json.load(fh)
     else:
-        sys.exit(f"[ERROR] Unsupported file type: {ext}. Supported: .dxf, .dwg, .pdf, .json")
+        sys.exit(
+            f"[ERROR] Unsupported file type '{ext}'.\n"
+            "Accepted formats: .pdf  .dxf  .dwg"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -103,12 +107,12 @@ def build_parser() -> argparse.ArgumentParser:
     input_group.add_argument(
         "--input", "-i",
         metavar="FILE",
-        help="Path to a DXF, PDF or JSON input file.",
+        help="Path to a PDF or DXF/DWG architectural drawing.",
     )
     input_group.add_argument(
         "--sample",
         action="store_true",
-        help="Use the built-in sample data (samples/sample_input.json).",
+        help="Use the built-in sample data (for development and testing).",
     )
     p.add_argument(
         "--type", "-t",
@@ -219,10 +223,11 @@ def main(argv: list[str] | None = None) -> int:
     output_path = generator.generate(boq, report, args.output, project_info)
     print(f"[QTO] ✓ BOQ saved to: {output_path}")
 
+    threshold = validator.overall_confidence_threshold
     if report.is_draft:
         print(
-            f"[QTO] ⚠  Overall confidence {report.overall_confidence:.1f}% is below 95%. "
-            f"Output is marked DRAFT — manual review required."
+            f"[QTO] ⚠  Overall confidence {report.overall_confidence:.1f}% is below "
+            f"{threshold:.0f}%. Output is marked DRAFT — manual review required."
         )
     else:
         print(

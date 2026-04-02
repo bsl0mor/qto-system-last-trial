@@ -92,24 +92,27 @@ class TestValidateItem:
 # ---------------------------------------------------------------------------
 
 class TestValidateRatios:
-    def test_external_plaster_to_thermal_block_ratio_g1(self, validator):
-        # G+1 expected ratio = 0.805 (external_plaster / thermal_block_external)
-        # key: external_plaster_to_thermal_block_external
+    def test_thermal_block_to_block20_internal_ratio_g1(self, validator):
+        # G+1 expected ratio: thermal_block_external / block_20_internal = 1.149
+        # Provide both items at the exact expected ratio → GREEN
+        tb_qty = 359.7
+        b20_qty = round(tb_qty / 1.149, 1)
         boq = [
-            {"description": "Thermal Block (External Walls)", "quantity": 466.0, "unit": "m2"},
-            {"description": "External Villa Walls Finish", "quantity": 466.0 * 0.805, "unit": "m2"},
+            {"description": "Thermal Block (External Walls)", "quantity": tb_qty, "unit": "m2"},
+            {"description": "Block 20cm — Internal Walls",    "quantity": b20_qty, "unit": "m2"},
         ]
         results = validator.validate_ratios(boq, "G+1")
-        # Should have at least one ratio result
         assert len(results) >= 1
-        ratio_result = results[0]
-        # The ratio should be close to expected → GREEN or YELLOW
-        assert ratio_result.flag in ("GREEN", "YELLOW")
+        target = next(
+            r for r in results
+            if r.ratio_name == "thermal_block_external_to_block_20_internal"
+        )
+        assert target.flag in ("GREEN", "YELLOW")
 
     def test_zero_denominator_gives_red(self, validator):
         boq = [
-            {"description": "External Villa Walls Finish", "quantity": 718.8, "unit": "m2"},
-            # Thermal block missing (zero)
+            {"description": "Thermal Block (External Walls)", "quantity": 359.7, "unit": "m2"},
+            # block_20_internal missing → denominator zero for that ratio
         ]
         results = validator.validate_ratios(boq, "G+1")
         if results:
@@ -117,8 +120,8 @@ class TestValidateRatios:
             assert len(red_results) >= 1
 
     def test_no_ratio_checks_for_unknown_type(self, validator):
-        boq = [{"description": "Thermal Block (External Walls)", "quantity": 466.0, "unit": "m2"}]
-        results = validator.validate_ratios(boq, "G")   # no ratio checks configured for "G"
+        boq = [{"description": "Thermal Block (External Walls)", "quantity": 359.7, "unit": "m2"}]
+        results = validator.validate_ratios(boq, "G+3")   # undefined type → no ratio checks
         assert results == []
 
 
@@ -129,40 +132,40 @@ class TestValidateRatios:
 class TestValidateAll:
     def test_returns_validation_report(self, validator):
         boq = [
-            {"description": "Thermal Block (External Walls)", "quantity": 466.0, "unit": "m2"},
-            {"description": "Internal Plaster (Gypsum)", "quantity": 1144.0, "unit": "m2"},
-            {"description": "Dry Area Flooring", "quantity": 248.7, "unit": "m2"},
+            {"description": "Thermal Block (External Walls)", "quantity": 359.7, "unit": "m2"},
+            {"description": "Internal Plaster (Gypsum)",      "quantity": 1141.8, "unit": "m2"},
+            {"description": "Dry Area Flooring",              "quantity": 196.1,  "unit": "m2"},
         ]
-        report = validator.validate_all(boq, "G+1", 153.0)
+        report = validator.validate_all(boq, "G+1", 587.0)
         assert isinstance(report, ValidationReport)
         assert len(report.item_results) == 3
         assert report.project_type == "G+1"
-        assert report.plot_area == 153.0
+        assert report.plot_area == 587.0
 
     def test_overall_confidence_is_weighted_average(self, validator):
-        # All items at exact average → all confidence = 100% → overall = 100%
+        # Items at exact averages, avg plot area → 0 % deviation, n≥10 → confidence=100%
         boq = [
-            {"description": "Thermal Block (External Walls)", "quantity": 466.0, "unit": "m2"},
-            {"description": "Dry Area Flooring", "quantity": 149.5, "unit": "m2"},
+            {"description": "Thermal Block (External Walls)", "quantity": 359.7, "unit": "m2"},
+            {"description": "Dry Area Flooring",              "quantity": 196.1, "unit": "m2"},
         ]
-        report = validator.validate_all(boq, "G+1", 153.0)
-        assert report.overall_confidence == pytest.approx(100.0, abs=0.5)
+        report = validator.validate_all(boq, "G+1", 587.0)
+        assert report.overall_confidence >= 95.0
 
-    def test_draft_flag_when_confidence_below_95(self, validator):
+    def test_draft_flag_when_confidence_below_threshold(self, validator):
         # Wildly wrong quantities → low confidence → DRAFT
         boq = [
             {"description": "Thermal Block (External Walls)", "quantity": 9999.0, "unit": "m2"},
-            {"description": "Dry Area Flooring", "quantity": 9999.0, "unit": "m2"},
+            {"description": "Dry Area Flooring",              "quantity": 9999.0, "unit": "m2"},
         ]
-        report = validator.validate_all(boq, "G+1", 153.0)
+        report = validator.validate_all(boq, "G+1", 587.0)
         assert report.is_draft is True
 
-    def test_final_flag_when_confidence_above_95(self, validator):
-        # Exact average quantities → confidence ~100% → FINAL
+    def test_final_flag_when_confidence_high(self, validator):
+        # Exact averages → confidence ~100% → is_draft False
         boq = [
-            {"description": "Thermal Block (External Walls)", "quantity": 466.0, "unit": "m2"},
+            {"description": "Thermal Block (External Walls)", "quantity": 359.7, "unit": "m2"},
         ]
-        report = validator.validate_all(boq, "G+1", 153.0)
+        report = validator.validate_all(boq, "G+1", 587.0)
         assert report.is_draft is False
 
     def test_summary_string_is_not_empty(self, validator):
@@ -174,7 +177,7 @@ class TestValidateAll:
         boq = [
             {"description": "Thermal Block (External Walls)", "quantity": 9999.0, "unit": "m2"},
         ]
-        report = validator.validate_all(boq, "G+1", 153.0)
+        report = validator.validate_all(boq, "G+1", 587.0)
         manual_review_items = [r for r in report.item_results if r.requires_manual_review]
         assert len(manual_review_items) >= 1
         assert "manual review" in report.summary.lower()

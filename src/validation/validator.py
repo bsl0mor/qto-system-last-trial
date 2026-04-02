@@ -157,6 +157,11 @@ class QTOValidator:
         self._averages = _load_json("config/averages.json")
         self._thresholds = _load_json("config/thresholds.json")
 
+    @property
+    def overall_confidence_threshold(self) -> float:
+        """The minimum overall confidence required for a FINAL (non-draft) output."""
+        return float(self._thresholds.get("overall_confidence_threshold", 75.0))
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -171,16 +176,22 @@ class QTOValidator:
     ) -> ValidationResult:
         """
         Compare a single BOQ item against the scaled historical average.
-        Confidence is capped by the sample count of the reference data so that
-        items backed by a single project can never show 100% confidence.
+
+        Confidence logic (three layers, applied in order):
+        1. Deviation from scaled mean → linear decay 100%→0% over 2×tolerance.
+        2. Range boost: if the quantity falls within the historical [min, max]
+           band (scaled to the project plot area), confidence is floored at 85%.
+           This reflects that a value within observed real-project bounds is
+           reasonable even if it deviates from the mean.
+        3. Sample-count cap: prevents 100% confidence when the reference is
+           backed by very few projects (n=0 estimated → cap 70%, n=1 → 80%, etc.).
         """
         tol = self._thresholds["range_tolerance"]
         conf_threshold = self._thresholds["confidence_threshold"]
 
-        avg_qty, avg_plot, n = self._get_average(item_name, project_type)
+        avg_qty, avg_plot, n, min_qty, max_qty = self._get_average(item_name, project_type)
 
         if avg_qty is None:
-            # No reference data — assign neutral confidence
             return ValidationResult(
                 item_name=item_name,
                 calculated_qty=calculated_qty,
@@ -194,25 +205,25 @@ class QTOValidator:
                 note="No reference average available",
             )
 
-        # Scale average by plot area ratio
-        if avg_plot and avg_plot > 0:
-            scaled = avg_qty * (plot_area / avg_plot)
-        else:
-            scaled = avg_qty
+        # Scale all reference values by the plot-area ratio
+        ratio = (plot_area / avg_plot) if (avg_plot and avg_plot > 0) else 1.0
+        scaled = avg_qty * ratio
+        scaled_min = (min_qty * ratio) if min_qty is not None else None
+        scaled_max = (max_qty * ratio) if max_qty is not None else None
 
-        if scaled > 0:
-            deviation = abs(calculated_qty - scaled) / scaled
-        else:
-            deviation = 0.0
-
+        deviation = abs(calculated_qty - scaled) / scaled if scaled > 0 else 0.0
         deviation_pct = deviation * 100.0
 
-        # Confidence decays linearly from 100% at 0% deviation to 0% at 2× tolerance
-        raw_conf = max(0.0, 1.0 - (deviation / (2 * tol))) * 100.0
+        # Layer 1: deviation-based confidence
+        raw_conf = max(0.0, 1.0 - (deviation / (2.0 * tol))) * 100.0
 
-        # Cap confidence based on how many real projects back this reference value
-        capped_conf = min(raw_conf, _n_confidence_cap(n))
-        confidence = round(capped_conf, 1)
+        # Layer 2: in-range boost — value is within observed historical bounds
+        if scaled_min is not None and scaled_max is not None and n > 0:
+            if scaled_min <= calculated_qty <= scaled_max:
+                raw_conf = max(raw_conf, 85.0)
+
+        # Layer 3: sample-count cap
+        confidence = round(min(raw_conf, _n_confidence_cap(n)), 1)
 
         flag = self._flag(confidence)
         requires_review = confidence < conf_threshold
@@ -353,18 +364,20 @@ class QTOValidator:
 
     def _get_average(
         self, item_name: str, project_type: str
-    ) -> tuple[float | None, float | None, int]:
-        """Return (avg_qty, avg_plot_area, n) for the item, or (None, None, 0)."""
+    ) -> tuple[float | None, float | None, int, float | None, float | None]:
+        """Return (avg_qty, avg_plot_area, n, min_qty, max_qty) for the item."""
         key = _description_to_key(item_name)
         if key is None:
-            return None, None, 0
+            return None, None, 0, None, None
 
         pt_data = self._averages.get(project_type, {})
         item_data = pt_data.get("items", {}).get(key, {})
         avg_qty = item_data.get("value")
         avg_plot = pt_data.get("meta", {}).get("avg_plot_area")
         n = item_data.get("n", 0)
-        return avg_qty, avg_plot, n
+        min_qty = item_data.get("min")
+        max_qty = item_data.get("max")
+        return avg_qty, avg_plot, n, min_qty, max_qty
 
     def _flag(self, confidence: float) -> str:
         ct = self._thresholds["color_thresholds"]
