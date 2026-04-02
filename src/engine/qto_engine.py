@@ -13,6 +13,7 @@ from typing import Any
 from src.engine.sub_structure import SubStructureCalculator
 from src.engine.super_structure import SuperStructureCalculator
 from src.engine.finishes import FinishesCalculator
+from src.validation.validator import QTOValidator
 
 
 # ---------------------------------------------------------------------------
@@ -84,6 +85,7 @@ class QTOEngine:
         self.fin_calc = FinishesCalculator()
         self._averages = _load_averages()
         self._rates = _load_rates()
+        self._validator = QTOValidator()
 
     # ------------------------------------------------------------------
     def run(self, data: dict) -> list[dict]:
@@ -125,7 +127,25 @@ class QTOEngine:
             data, floor_height, project_type, plot_area
         ))
 
-        return boq
+        # ------------------------------------------------------------------
+        # CONFIDENCE FILTER — exclude any item with confidence < 90%
+        # ------------------------------------------------------------------
+        exclusion_threshold = self._validator._thresholds.get("exclusion_threshold", 90.0)
+        validated: list[dict] = []
+        for item in boq:
+            vr = self._validator.validate_item(
+                item_name=item["description"],
+                calculated_qty=item["quantity"],
+                unit=item["unit"],
+                project_type=project_type,
+                plot_area=plot_area,
+            )
+            item["confidence"] = vr.confidence
+            item["flag"] = vr.flag
+            if vr.confidence >= exclusion_threshold:
+                validated.append(item)
+
+        return validated
 
     # ==================================================================
     # SUB-STRUCTURE helpers

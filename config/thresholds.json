@@ -6,12 +6,13 @@
     "color green≥80%, yellow≥65%: reflects real-world BOQ quality bands.",
     "Min/max range boost in validator: items within historical bounds → floor 85%."
   ],
-  "confidence_threshold": 75.0,
+  "confidence_threshold": 90.0,
+  "exclusion_threshold": 90.0,
   "range_tolerance": 0.30,
-  "overall_confidence_threshold": 75.0,
+  "overall_confidence_threshold": 90.0,
   "color_thresholds": {
-    "green": 80.0,
-    "yellow": 65.0,
+    "green": 95.0,
+    "yellow": 90.0,
     "red": 0.0
   },
   "_ratio_notes": [

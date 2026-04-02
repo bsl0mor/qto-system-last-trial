@@ -220,7 +220,7 @@ class QTOValidator:
         # Layer 2: in-range boost — value is within observed historical bounds
         if scaled_min is not None and scaled_max is not None and n > 0:
             if scaled_min <= calculated_qty <= scaled_max:
-                raw_conf = max(raw_conf, 85.0)
+                raw_conf = max(raw_conf, 90.0)
 
         # Layer 3: sample-count cap
         confidence = round(min(raw_conf, _n_confidence_cap(n)), 1)
