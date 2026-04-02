@@ -1,0 +1,215 @@
+{
+  "project_type": "G+1",
+  "project_name": "Reference G+1 Villa (587 m²)",
+  "project_ref": "QTO-REF-587",
+  "plot_area": 587,
+  "gf_area": 250,
+  "floor_height": 3.0,
+  "slab_thickness": 0.2,
+  "gfl": 0.3,
+  "exc_depth": 1.5,
+  "tb_depth": 0.4,
+  "pcc_thickness": 0.1,
+  "gfsl_level": 0.3,
+  "longest_length": 26.0,
+  "longest_width": 20.0,
+  "external_perimeter": 82.0,
+  "internal_wall_length_20cm": 110.0,
+  "internal_wall_length_10cm": 46.0,
+  "dry_area_perimeter": 180.0,
+  "roof_area": 250.0,
+  "total_floor_area": 244.0,
+  "has_road_base": false,
+  "road_base_thickness": 0.25,
+  "main_door_area": 4.0,
+  "stair_width": 2.0,
+  "stair_count": 2,
+  "sand_fill_thickness": 0.3,
+  "boundary_wall_height": 2.5,
+  "gf_columns": [
+    {"length": 0.3, "width": 0.3, "qty": 29}
+  ],
+  "ff_columns": [
+    {"length": 0.3, "width": 0.3, "qty": 29}
+  ],
+  "ff_slabs": [
+    {"area": 250.0, "thickness": 0.2}
+  ],
+  "roof_slabs": [
+    {"area": 250.0, "thickness": 0.2}
+  ],
+  "ff_beams": [
+    {"length": 8.0, "width": 0.3, "depth": 0.6, "count": 12},
+    {"length": 5.0, "width": 0.3, "depth": 0.6, "count": 12}
+  ],
+  "roof_beams": [
+    {"length": 8.0, "width": 0.3, "depth": 0.6, "count": 12},
+    {"length": 5.0, "width": 0.3, "depth": 0.6, "count": 12}
+  ],
+  "parapet_perimeter": 82.0,
+  "parapet_height": 1.0,
+  "parapet_thickness": 0.15,
+  "parapet_capping_height": 0.2,
+  "gf_floor_area": 244.0,
+  "ff_floor_area": 244.0,
+  "gf_dry_area_perimeter": 180.0,
+  "ff_dry_area_perimeter": 120.0,
+  "footings": [
+    {
+      "width": 1.5,
+      "length": 1.5,
+      "depth": 0.5,
+      "count": 18,
+      "footing_type": "pad"
+    },
+    {
+      "width": 1.8,
+      "length": 1.8,
+      "depth": 0.6,
+      "count": 12,
+      "footing_type": "pad"
+    },
+    {
+      "width": 2.0,
+      "length": 2.0,
+      "depth": 0.7,
+      "count": 6,
+      "footing_type": "pad"
+    }
+  ],
+  "neck_columns": [
+    {
+      "width": 0.3,
+      "length": 0.3,
+      "count": 29
+    }
+  ],
+  "tie_beams": [
+    {
+      "length": 8.0,
+      "width": 0.3,
+      "depth": 0.5,
+      "count": 10
+    },
+    {
+      "length": 5.0,
+      "width": 0.3,
+      "depth": 0.5,
+      "count": 10
+    }
+  ],
+  "solid_block_walls": [
+    {
+      "wall_length": 60.0,
+      "count": 1
+    }
+  ],
+  "slabs": [
+    {
+      "area": 250.0,
+      "thickness": 0.2
+    },
+    {
+      "area": 250.0,
+      "thickness": 0.2
+    }
+  ],
+  "beams": [
+    {
+      "length": 8.0,
+      "width": 0.3,
+      "depth": 0.6,
+      "count": 12
+    },
+    {
+      "length": 5.0,
+      "width": 0.3,
+      "depth": 0.6,
+      "count": 12
+    }
+  ],
+  "columns": [
+    {
+      "length": 0.3,
+      "width": 0.3,
+      "qty": 29
+    }
+  ],
+  "gf_rooms": [
+    {"room_type": "living",   "area": 28.0, "perimeter": 22.0},
+    {"room_type": "living",   "area": 22.0, "perimeter": 19.0},
+    {"room_type": "dining",   "area": 16.0, "perimeter": 16.0},
+    {"room_type": "bedroom",  "area": 22.0, "perimeter": 19.0},
+    {"room_type": "bedroom",  "area": 20.0, "perimeter": 18.0},
+    {"room_type": "bedroom",  "area": 18.0, "perimeter": 17.0},
+    {"room_type": "study",    "area": 14.0, "perimeter": 15.0},
+    {"room_type": "balcony",  "area": 11.0, "perimeter": 13.5},
+    {"room_type": "kitchen",  "area": 12.0, "perimeter": 14.0},
+    {"room_type": "toilet",   "area": 5.0,  "perimeter": 9.0},
+    {"room_type": "toilet",   "area": 4.0,  "perimeter": 8.0},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 6.5,  "perimeter": 10.0},
+    {"room_type": "laundry",  "area": 6.5,  "perimeter": 10.5}
+  ],
+  "rooms": [
+    {"room_type": "living",   "area": 28.0, "perimeter": 22.0},
+    {"room_type": "living",   "area": 22.0, "perimeter": 19.0},
+    {"room_type": "dining",   "area": 16.0, "perimeter": 16.0},
+    {"room_type": "bedroom",  "area": 22.0, "perimeter": 19.0},
+    {"room_type": "bedroom",  "area": 20.0, "perimeter": 18.0},
+    {"room_type": "bedroom",  "area": 18.0, "perimeter": 17.0},
+    {"room_type": "study",    "area": 14.0, "perimeter": 15.0},
+    {"room_type": "balcony",  "area": 11.0, "perimeter": 13.5},
+    {"room_type": "kitchen",  "area": 12.0, "perimeter": 14.0},
+    {"room_type": "toilet",   "area": 5.0,  "perimeter": 9.0},
+    {"room_type": "toilet",   "area": 4.0,  "perimeter": 8.0},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 6.5,  "perimeter": 10.0},
+    {"room_type": "laundry",  "area": 6.5,  "perimeter": 10.5},
+    {"room_type": "bedroom",  "area": 22.0, "perimeter": 19.0},
+    {"room_type": "bedroom",  "area": 20.0, "perimeter": 18.0},
+    {"room_type": "bedroom",  "area": 18.0, "perimeter": 17.0},
+    {"room_type": "balcony",  "area": 11.0, "perimeter": 13.5},
+    {"room_type": "toilet",   "area": 4.0,  "perimeter": 8.0},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 6.5,  "perimeter": 10.0}
+  ],
+  "first_floor_rooms": [
+    {"room_type": "bedroom",  "area": 22.0, "perimeter": 19.0},
+    {"room_type": "bedroom",  "area": 20.0, "perimeter": 18.0},
+    {"room_type": "bedroom",  "area": 18.0, "perimeter": 17.0},
+    {"room_type": "balcony",  "area": 11.0, "perimeter": 13.5},
+    {"room_type": "toilet",   "area": 4.0,  "perimeter": 8.0},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 7.0,  "perimeter": 10.5},
+    {"room_type": "bathroom", "area": 6.5,  "perimeter": 10.0}
+  ],
+  "gf_walls": [
+    {"type": "external",     "length": 82.0,  "thickness": 0.25},
+    {"type": "internal_20",  "length": 110.0, "thickness": 0.2},
+    {"type": "internal_10",  "length": 46.0,  "thickness": 0.1}
+  ],
+  "ff_walls": [
+    {"type": "external",     "length": 82.0,  "thickness": 0.25},
+    {"type": "internal_20",  "length": 60.0,  "thickness": 0.2},
+    {"type": "internal_10",  "length": 25.0,  "thickness": 0.1}
+  ],
+  "walls": [
+    {"type": "external",     "length": 82.0,  "thickness": 0.25},
+    {"type": "internal_20",  "length": 110.0, "thickness": 0.2},
+    {"type": "internal_10",  "length": 46.0,  "thickness": 0.1}
+  ],
+  "openings": [
+    {"opening_type": "door",   "width": 2.0, "height": 2.4, "count": 1},
+    {"opening_type": "door",   "width": 0.9, "height": 2.1, "count": 16},
+    {"opening_type": "window", "width": 1.8, "height": 1.5, "count": 10},
+    {"opening_type": "window", "width": 1.2, "height": 1.2, "count": 8}
+  ],
+  "thermal_block_schedule_area": null,
+  "interlock_paving_area": null,
+  "false_ceiling_area": null,
+  "roof_waterproofing_area": null
+}
