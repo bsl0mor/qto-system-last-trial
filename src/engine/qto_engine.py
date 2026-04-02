@@ -128,7 +128,8 @@ class QTOEngine:
         ))
 
         # ------------------------------------------------------------------
-        # CONFIDENCE FILTER — exclude any item with confidence < 90%
+        # CONFIDENCE FILTER — items below 90% get smart statistical estimation
+        # rather than silent exclusion, so the BOQ is always complete.
         # ------------------------------------------------------------------
         exclusion_threshold = self._validator._thresholds.get("exclusion_threshold", 90.0)
         validated: list[dict] = []
@@ -142,8 +143,26 @@ class QTOEngine:
             )
             item["confidence"] = vr.confidence
             item["flag"] = vr.flag
+            item["estimated"] = False
+
             if vr.confidence >= exclusion_threshold:
                 validated.append(item)
+            elif vr.scaled_average is not None and vr.scaled_average > 0:
+                # Smart estimation: swap in the scaled historical average so the
+                # BOQ remains complete; record the original calculated quantity.
+                item["original_qty"] = item["quantity"]
+                item["quantity"] = round(vr.scaled_average, 3)
+                item["amount"] = round(item["quantity"] * item["rate"], 2)
+                item["flag"] = "ESTIMATED"
+                item["estimated"] = True
+                item["confidence_note"] = (
+                    f"Qty estimated from {project_type} historical average "
+                    f"(calculated: {item['original_qty']:.3f} {item['unit']}, "
+                    f"confidence {vr.confidence:.1f}%)"
+                )
+                validated.append(item)
+            # else: no historical reference at all and confidence < 90% → truly
+            # unknown quantity; exclude rather than invent a number.
 
         return validated
 

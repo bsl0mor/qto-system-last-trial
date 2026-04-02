@@ -47,6 +47,9 @@ COLOR_RED_FG = "9C0006"
 COLOR_TOTAL_BG = "E2EFDA"
 COLOR_TOTAL_FG = "276221"
 
+COLOR_ESTIMATED_BG = "E2D0F7"   # soft purple — statistical estimate
+COLOR_ESTIMATED_FG = "5B0099"
+
 COLOR_DRAFT_BG = "FFC7CE"
 COLOR_FINAL_BG = "C6EFCE"
 
@@ -124,6 +127,7 @@ class ExcelGenerator:
 
         self._create_boq_sheet(wb, boq_results, val_map, project_info)
         self._create_summary_sheet(wb, boq_results, validation_report, project_info)
+        self._create_analysis_sheet(wb, boq_results, project_info)
 
         # Ensure output directory exists
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
@@ -394,6 +398,225 @@ class ExcelGenerator:
                 row += 1
 
     # ------------------------------------------------------------------
+    # Analysis Sheet
+    # ------------------------------------------------------------------
+    def _create_analysis_sheet(
+        self,
+        wb: "Workbook",
+        boq: list[dict],
+        info: dict,
+    ) -> None:
+        """
+        Third sheet: cost breakdown, data quality, and top cost drivers.
+        Gives management/engineer an instant intelligence snapshot.
+        """
+        ws = wb.create_sheet("Analysis")
+
+        plot_area: float = float(info.get("plot_area") or 1.0) or 1.0
+        grand_total = sum(item.get("amount", 0.0) for item in boq)
+
+        # ---- Title ----
+        row = 1
+        title = ws.cell(row=row, column=1, value="BOQ COST & DATA QUALITY ANALYSIS")
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        title.fill = _fill(COLOR_HEADER_BG)
+        title.font = _font(bold=True, color=COLOR_HEADER_FG, size=14)
+        title.alignment = _center()
+        ws.row_dimensions[row].height = 36
+        row += 2
+
+        # ---- Project meta ----
+        for label, key in [
+            ("Project", "name"), ("Type", "type"),
+            ("Plot Area (m²)", "plot_area"), ("Date", "date"),
+        ]:
+            ws.cell(row=row, column=1, value=label).font = _font(bold=True)
+            ws.cell(row=row, column=2, value=info.get(key, "N/A")).font = _font()
+            row += 1
+        row += 1
+
+        # ---- Data quality summary ----
+        total_items = len(boq)
+        estimated_items = sum(1 for i in boq if i.get("estimated"))
+        calculated_items = total_items - estimated_items
+        quality_pct = (calculated_items / total_items * 100.0) if total_items else 0.0
+
+        dq_title = ws.cell(row=row, column=1, value="DATA QUALITY")
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        dq_title.fill = _fill(COLOR_SECTION_BG)
+        dq_title.font = _font(bold=True, color=COLOR_SECTION_FG, size=11)
+        dq_title.alignment = _left()
+        row += 1
+
+        dq_rows = [
+            ("Total BOQ items",        total_items),
+            ("Calculated from drawings", calculated_items),
+            ("Estimated from benchmarks", estimated_items),
+            ("Data quality",           f"{quality_pct:.1f}%"),
+            ("Grand Total Cost (AED)", f"{grand_total:,.2f}"),
+            ("Cost per m² (AED/m²)",   f"{grand_total / plot_area:,.2f}" if plot_area else "N/A"),
+        ]
+        for label, value in dq_rows:
+            lbl = ws.cell(row=row, column=1, value=label)
+            lbl.font = _font(bold=True)
+            lbl.border = _border()
+            val = ws.cell(row=row, column=2, value=value)
+            val.font = _font()
+            val.border = _border()
+            if label == "Estimated from benchmarks" and estimated_items > 0:
+                val.fill = _fill(COLOR_ESTIMATED_BG)
+                val.font = _font(color=COLOR_ESTIMATED_FG)
+            elif label == "Data quality":
+                val.fill = _fill(COLOR_GREEN_BG if quality_pct >= 80 else
+                                 COLOR_YELLOW_BG if quality_pct >= 50 else COLOR_RED_BG)
+            row += 1
+        row += 1
+
+        # ---- Section cost breakdown ----
+        sb_title = ws.cell(row=row, column=1, value="SECTION COST BREAKDOWN")
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        sb_title.fill = _fill(COLOR_SECTION_BG)
+        sb_title.font = _font(bold=True, color=COLOR_SECTION_FG, size=11)
+        sb_title.alignment = _left()
+        row += 1
+
+        # Column headers
+        sec_headers = ["Section", "Total (AED)", "% of Total", "Cost / m²",
+                       "Items", "Calculated", "Estimated"]
+        for ci, h in enumerate(sec_headers, start=1):
+            c = ws.cell(row=row, column=ci, value=h)
+            c.fill = _fill(COLOR_HEADER_BG)
+            c.font = _font(bold=True, color=COLOR_HEADER_FG)
+            c.alignment = _center()
+            c.border = _border()
+        row += 1
+
+        # Build section data
+        section_data: dict[str, dict] = {}
+        for item in boq:
+            cat = item.get("category", "General")
+            sd = section_data.setdefault(cat, {
+                "total": 0.0, "count": 0,
+                "calculated": 0, "estimated": 0
+            })
+            sd["total"] += item.get("amount", 0.0)
+            sd["count"] += 1
+            if item.get("estimated"):
+                sd["estimated"] += 1
+            else:
+                sd["calculated"] += 1
+
+        for cat, sd in section_data.items():
+            pct = (sd["total"] / grand_total * 100.0) if grand_total else 0.0
+            cost_pm2 = sd["total"] / plot_area if plot_area else 0.0
+            row_vals = [
+                cat,
+                round(sd["total"], 2),
+                f"{pct:.1f}%",
+                round(cost_pm2, 2),
+                sd["count"],
+                sd["calculated"],
+                sd["estimated"],
+            ]
+            for ci, val in enumerate(row_vals, start=1):
+                c = ws.cell(row=row, column=ci, value=val)
+                c.border = _border()
+                c.alignment = _center() if ci != 1 else _left()
+                c.font = _font()
+                if ci == 2:
+                    c.number_format = "#,##0.00"
+                if ci == 7 and sd["estimated"] > 0:
+                    c.fill = _fill(COLOR_ESTIMATED_BG)
+                    c.font = _font(color=COLOR_ESTIMATED_FG)
+            row += 1
+
+        # Grand total row
+        gt = ws.cell(row=row, column=1, value="GRAND TOTAL")
+        gt.fill = _fill(COLOR_HEADER_BG)
+        gt.font = _font(bold=True, color=COLOR_HEADER_FG)
+        gt.border = _border()
+        gt_val = ws.cell(row=row, column=2, value=round(grand_total, 2))
+        gt_val.fill = _fill(COLOR_HEADER_BG)
+        gt_val.font = _font(bold=True, color=COLOR_HEADER_FG)
+        gt_val.number_format = "#,##0.00"
+        gt_val.border = _border()
+        row += 2
+
+        # ---- Top 10 cost drivers ----
+        td_title = ws.cell(row=row, column=1, value="TOP 10 COST DRIVERS")
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        td_title.fill = _fill(COLOR_SECTION_BG)
+        td_title.font = _font(bold=True, color=COLOR_SECTION_FG, size=11)
+        td_title.alignment = _left()
+        row += 1
+
+        td_headers = ["Rank", "Description", "Section", "Qty", "Unit",
+                      "Amount (AED)", "% of Total"]
+        for ci, h in enumerate(td_headers, start=1):
+            c = ws.cell(row=row, column=ci, value=h)
+            c.fill = _fill(COLOR_HEADER_BG)
+            c.font = _font(bold=True, color=COLOR_HEADER_FG)
+            c.alignment = _center()
+            c.border = _border()
+        row += 1
+
+        top_items = sorted(boq, key=lambda x: x.get("amount", 0.0), reverse=True)[:10]
+        for rank, item in enumerate(top_items, start=1):
+            pct = (item.get("amount", 0.0) / grand_total * 100.0) if grand_total else 0.0
+            row_vals = [
+                rank,
+                item.get("description", ""),
+                item.get("category", ""),
+                item.get("quantity", 0.0),
+                item.get("unit", ""),
+                item.get("amount", 0.0),
+                f"{pct:.1f}%",
+            ]
+            flag = item.get("flag", "GREEN")
+            bg = self._flag_bg(flag)
+            fg = self._flag_fg(flag)
+            for ci, val in enumerate(row_vals, start=1):
+                c = ws.cell(row=row, column=ci, value=val)
+                c.border = _border()
+                c.alignment = _center() if ci not in (2, 3) else _left()
+                if ci == 6:
+                    c.number_format = "#,##0.00"
+                    c.font = _font(bold=True)
+                elif ci == 1:
+                    # Rank coloured by item flag so estimated drivers stand out
+                    c.fill = _fill(bg)
+                    c.font = _font(bold=True, color=fg)
+                else:
+                    c.font = _font()
+            row += 1
+
+        # ---- Legend ----
+        row += 1
+        legend_title = ws.cell(row=row, column=1, value="LEGEND")
+        legend_title.font = _font(bold=True)
+        row += 1
+        for flag, label in [
+            ("GREEN",     "Calculated — within historical range"),
+            ("YELLOW",    "Calculated — moderate deviation from average"),
+            ("RED",       "Calculated — high deviation, manual review needed"),
+            ("ESTIMATED", "Estimated — qty replaced with scaled historical average"),
+        ]:
+            bg = self._flag_bg(flag)
+            fg = self._flag_fg(flag)
+            c = ws.cell(row=row, column=1, value=f"  {flag}")
+            c.fill = _fill(bg)
+            c.font = _font(bold=True, color=fg)
+            c.border = _border()
+            lbl = ws.cell(row=row, column=2, value=label)
+            lbl.font = _font()
+            row += 1
+
+        # ---- Column widths ----
+        widths = [28, 14, 12, 13, 8, 16, 10]
+        for ci, w in enumerate(widths, start=1):
+            ws.column_dimensions[get_column_letter(ci)].width = w
+
+    # ------------------------------------------------------------------
     # Header writer
     # ------------------------------------------------------------------
     def _write_project_header(self, ws: Any, info: dict) -> None:
@@ -425,15 +648,21 @@ class ExcelGenerator:
     # ------------------------------------------------------------------
     @staticmethod
     def _flag_bg(flag: str) -> str:
-        return {"GREEN": COLOR_GREEN_BG, "YELLOW": COLOR_YELLOW_BG, "RED": COLOR_RED_BG}.get(
-            flag, COLOR_GREEN_BG
-        )
+        return {
+            "GREEN":     COLOR_GREEN_BG,
+            "YELLOW":    COLOR_YELLOW_BG,
+            "RED":       COLOR_RED_BG,
+            "ESTIMATED": COLOR_ESTIMATED_BG,
+        }.get(flag, COLOR_GREEN_BG)
 
     @staticmethod
     def _flag_fg(flag: str) -> str:
-        return {"GREEN": COLOR_GREEN_FG, "YELLOW": COLOR_YELLOW_FG, "RED": COLOR_RED_FG}.get(
-            flag, COLOR_GREEN_FG
-        )
+        return {
+            "GREEN":     COLOR_GREEN_FG,
+            "YELLOW":    COLOR_YELLOW_FG,
+            "RED":       COLOR_RED_FG,
+            "ESTIMATED": COLOR_ESTIMATED_FG,
+        }.get(flag, COLOR_GREEN_FG)
 
     # ------------------------------------------------------------------
     # Validation map

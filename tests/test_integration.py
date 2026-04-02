@@ -217,9 +217,10 @@ class TestExcelGeneration:
         gen = ExcelGenerator()
         gen.generate(boq_results, validation_report, output_path, {})
         wb = openpyxl.load_workbook(output_path)
-        assert len(wb.sheetnames) >= 2
+        assert len(wb.sheetnames) >= 3
         assert "BOQ" in wb.sheetnames
         assert "Summary" in wb.sheetnames
+        assert "Analysis" in wb.sheetnames
 
     def test_excel_boq_sheet_has_data_rows(
         self, boq_results, validation_report, tmp_path
@@ -238,10 +239,80 @@ class TestExcelGeneration:
         )
         assert non_empty > 0
 
+    def test_analysis_sheet_has_data(
+        self, boq_results, validation_report, tmp_path
+    ):
+        import openpyxl
+        from src.output.excel_generator import ExcelGenerator
+        output_path = str(tmp_path / "test_analysis.xlsx")
+        gen = ExcelGenerator()
+        gen.generate(
+            boq_results, validation_report, output_path,
+            {"name": "Test Villa", "type": "G+1", "plot_area": 587, "date": "2024-01-01"},
+        )
+        wb = openpyxl.load_workbook(output_path)
+        ws = wb["Analysis"]
+        non_empty = sum(
+            1 for row in ws.iter_rows(values_only=True)
+            if any(cell is not None for cell in row)
+        )
+        assert non_empty > 10, "Analysis sheet appears nearly empty"
+
 
 # ---------------------------------------------------------------------------
-# CLI (--sample flag)
+# Smart estimation fallback
 # ---------------------------------------------------------------------------
+
+class TestSmartEstimation:
+    def test_all_boq_items_have_estimated_flag(self, boq_results):
+        """Every item must carry an 'estimated' boolean field."""
+        for item in boq_results:
+            assert "estimated" in item, (
+                f"Item missing 'estimated' field: {item['description']}"
+            )
+            assert isinstance(item["estimated"], bool)
+
+    def test_estimated_items_have_original_qty(self, boq_results):
+        """Estimated items must record the original calculated quantity."""
+        for item in boq_results:
+            if item.get("estimated"):
+                assert "original_qty" in item, (
+                    f"Estimated item missing 'original_qty': {item['description']}"
+                )
+                assert item["original_qty"] >= 0.0
+
+    def test_estimated_flag_is_ESTIMATED_string(self, boq_results):
+        """Estimated items must carry flag='ESTIMATED'."""
+        for item in boq_results:
+            if item.get("estimated"):
+                assert item["flag"] == "ESTIMATED", (
+                    f"Expected flag='ESTIMATED', got '{item['flag']}' "
+                    f"for {item['description']}"
+                )
+
+    def test_boq_is_always_complete(self, boq_results):
+        """
+        BOQ must include items from all three sections even when some
+        quantities were estimated from benchmarks.
+        """
+        cats = {item["category"] for item in boq_results}
+        assert "Sub-Structure" in cats
+        assert "Super-Structure" in cats
+        assert "Finishes" in cats
+
+    def test_amount_consistent_with_estimated_qty(self, boq_results):
+        """For estimated items, amount must reflect the estimated qty, not original."""
+        for item in boq_results:
+            if item.get("estimated"):
+                expected = round(item["quantity"] * item["rate"], 2)
+                assert abs(item["amount"] - expected) < 0.01, (
+                    f"Amount mismatch on estimated item {item['description']}: "
+                    f"qty={item['quantity']}, rate={item['rate']}, "
+                    f"amount={item['amount']}, expected={expected}"
+                )
+
+
+
 
 class TestCLI:
     def test_cli_sample_flag_runs_without_error(self, tmp_path):
